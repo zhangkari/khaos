@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+def build = depends.build
+def support = depends.support
+def test = depends.test
+
+def app_bundle_id = "com.class100.khaos.demo"
+def app_version_name = "0.0.1"
+def app_version_code = 000000001
+
+android {
+    compileSdkVersion build.compileSdkVersion
+
+    defaultConfig {
+        applicationId app_bundle_id
+        minSdkVersion build.minSdkVersion
+        targetSdkVersion build.targetSdkVersion
+        versionCode app_version_code
+        versionName app_version_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.core:core-ktx:$core_ktx"
+    implementation support.appcompat
+    implementation support.constraitLayout
+    implementation project(":khaos")
+    testImplementation test.junit
+    androidTestImplementation test.andJunit
+    androidTestImplementation test.espresso
+}
