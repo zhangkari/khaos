@@ -11,41 +11,6 @@ public abstract class KhAbsSdk extends AtContextAbility implements KhSdkAbility 
         this.listener = listener;
     }
 
-    @Override
-    public void createMeeting() {
-
-    }
-
-    @Override
-    public void joinMeeting() {
-
-    }
-
-    @Override
-    public void sendMeetingInvite() {
-
-    }
-
-    @Override
-    public void load() {
-
-    }
-
-    @Override
-    public void enable() {
-
-    }
-
-    @Override
-    public void disable() {
-
-    }
-
-    @Override
-    public void unload() {
-
-    }
-
     public interface OnSdkInitializedListener {
         void onInitialized(@NonNull KhAbsSdk sdk);
 

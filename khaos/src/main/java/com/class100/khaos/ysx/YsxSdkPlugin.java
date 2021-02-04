@@ -1,19 +1,27 @@
 package com.class100.khaos.ysx;
 
 import com.chinamobile.ysx.YSXError;
+import com.chinamobile.ysx.YSXInstantMeetingOptions;
+import com.chinamobile.ysx.YSXMeetingService;
+import com.chinamobile.ysx.YSXMeetingSettingsHelper;
+import com.chinamobile.ysx.YSXMessageListener;
 import com.chinamobile.ysx.YSXSdk;
 import com.chinamobile.ysx.YSXSdkAuthenticationListener;
 import com.chinamobile.ysx.YSXSdkInitializeListener;
 import com.chinamobile.ysx.auther.LoginResult;
 import com.chinamobile.ysx.auther.YSXLoginResultListener;
+import com.class100.atropos.generic.AtCollections;
 import com.class100.atropos.generic.AtLog;
 import com.class100.atropos.generic.AtTexts;
 import com.class100.hades.http.HaApiCallback;
 import com.class100.hades.http.HaApiResponse;
 import com.class100.hades.http.HaHttpClient;
 import com.class100.khaos.KhAbsSdk;
+import com.class100.khaos.KhCreateInstantMeetingConfig;
 import com.class100.khaos.ysx.internal.request.ReqKhSdkToken;
 import com.class100.khaos.ysx.internal.response.RespKhSdkToken;
+
+import java.util.List;
 
 public class YsxSdkPlugin extends KhAbsSdk {
     private static final String TAG = "YsxSdkPlugin";
@@ -136,9 +144,34 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     }
 
-    @Override
-    public void createMeeting() {
+    private String buildParticipants(List<String> list) {
+        if (AtCollections.isEmpty(list)) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String s : list) {
+            sb.append(s).append(",");
+        }
+        sb.delete(sb.length() - 1, sb.length());
+        return sb.toString();
+    }
 
+    @Override
+    public void createMeeting(KhCreateInstantMeetingConfig config) {
+        YSXInstantMeetingOptions options = new YSXInstantMeetingOptions();
+        options.no_video = !config.autoConnectVideo;
+        String participants = buildParticipants(config.participants);
+        YSXMeetingSettingsHelper helper = YSXSdk.getInstance().getMeetingSettingsHelper();
+        helper.setAutoConnectVoIPWhenJoinMeeting(config.autoConnectAudio);
+        helper.setMuteMyMicrophoneWhenJoinMeeting(config.autoMuteMicrophone);
+        helper.setTurnOffMyVideoWhenJoinMeeting(!config.autoEnableCamera);
+        YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
+        service.startInstantMeeting(env._app, config.topic, config.agenda, participants, options, new YSXMessageListener() {
+            @Override
+            public void onCallBack(int i, String s) {
+                AtLog.d(TAG, "startInstantMeeting", i + " , " + s);
+            }
+        });
     }
 
     @Override
