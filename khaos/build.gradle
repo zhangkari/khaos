@@ -50,6 +50,8 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.aar'])
     implementation support.appcompat
+    implementation 'androidx.cardview:cardview:1.0.0'
+    api "com.class100.atropos:atropos:0.0.5"
     testImplementation test.junit
     androidTestImplementation test.andJunit
     androidTestImplementation test.espresso
