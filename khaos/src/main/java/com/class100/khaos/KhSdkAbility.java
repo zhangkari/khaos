@@ -9,5 +9,13 @@ public interface KhSdkAbility extends AtAbility {
 
     void joinMeeting(Activity context, KhJoinMeetingConfig config);
 
-    void sendMeetingInvite();
+    void leaveMeeting();
+
+    void concludeMeeting();
+
+    void sendMeetingInvite(KhSendInviteConfig config, KhSendInviteListener listener);
+
+    void replyMeetingInvite(KhReplyInviteConfig config, KhReplyInviteListener listener);
+
+    void createScheduledMeeting(KhCreateScheduledConfig config, KhCreateScheduledListener listener);
 }

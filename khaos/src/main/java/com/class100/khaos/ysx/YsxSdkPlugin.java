@@ -16,6 +16,8 @@ import com.chinamobile.ysx.YSXStartMeetingOptions;
 import com.chinamobile.ysx.YSXStartMeetingParams4NormalUser;
 import com.chinamobile.ysx.auther.LoginResult;
 import com.chinamobile.ysx.auther.YSXLoginResultListener;
+import com.chinamobile.ysx.bean.Result;
+import com.chinamobile.ysx.responselistener.ResponseListenerCommon;
 import com.class100.atropos.generic.AtCollections;
 import com.class100.atropos.generic.AtLog;
 import com.class100.atropos.generic.AtTexts;
@@ -23,7 +25,15 @@ import com.class100.hades.http.HaApiCallback;
 import com.class100.hades.http.HaApiResponse;
 import com.class100.hades.http.HaHttpClient;
 import com.class100.khaos.KhAbsSdk;
+import com.class100.khaos.KhCreateScheduledConfig;
+import com.class100.khaos.KhCreateScheduledListener;
 import com.class100.khaos.KhJoinMeetingConfig;
+import com.class100.khaos.KhReplyInviteConfig;
+import com.class100.khaos.KhReplyInviteListener;
+import com.class100.khaos.KhReplyInviteResult;
+import com.class100.khaos.KhSendInviteConfig;
+import com.class100.khaos.KhSendInviteListener;
+import com.class100.khaos.KhSendInviteResult;
 import com.class100.khaos.KhStartMeetingConfig;
 import com.class100.khaos.ysx.internal.request.ReqKhSdkToken;
 import com.class100.khaos.ysx.internal.response.RespKhSdkToken;
@@ -183,10 +193,6 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     private void startScheduledMeeting(Activity context, KhStartMeetingConfig config) {
-        YSXMeetingSettingsHelper helper = YSXSdk.getInstance().getMeetingSettingsHelper();
-        helper.setAutoConnectVoIPWhenJoinMeeting(config.autoConnectAudioJoined);
-        helper.setMuteMyMicrophoneWhenJoinMeeting(config.autoMuteMicrophoneJoined);
-        helper.setTurnOffMyVideoWhenJoinMeeting(!config.autoConnectVideoJoined);
         YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
         YSXStartMeetingOptions opts = new YSXStartMeetingOptions();
         opts.no_audio = !config.autoConnectAudio;
@@ -203,6 +209,10 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     @Override
     public void startMeeting(Activity context, KhStartMeetingConfig config) {
+        YSXMeetingSettingsHelper helper = YSXSdk.getInstance().getMeetingSettingsHelper();
+        helper.setAutoConnectVoIPWhenJoinMeeting(config.autoConnectAudioJoined);
+        helper.setMuteMyMicrophoneWhenJoinMeeting(config.autoMuteMicrophoneJoined);
+        helper.setTurnOffMyVideoWhenJoinMeeting(!config.autoConnectVideoJoined);
         if (config.category == 0) {
             startInstantMeeting(context, config);
         } else if (config.category == 1) {
@@ -231,7 +241,57 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     @Override
-    public void sendMeetingInvite() {
+    public void leaveMeeting() {
+        YSXSdk.getInstance().getMeetingService().leaveCurrentMeeting(false);
+    }
+
+    @Override
+    public void concludeMeeting() {
+        YSXSdk.getInstance().getMeetingService().leaveCurrentMeeting(true);
+    }
+
+    @Override
+    public void sendMeetingInvite(KhSendInviteConfig config, final KhSendInviteListener listener) {
+        YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
+        service.sendInvite(config.meetingId, config.userId, config.token, new ResponseListenerCommon<KhSendInviteResult>() {
+            @Override
+            public void onFailure(Result result) {
+                if (listener != null) {
+                    listener.onError(result.getCode(), result.getMsg());
+                }
+            }
+
+            @Override
+            public void onResponse(KhSendInviteResult result) {
+                if (listener != null) {
+                    listener.onSuccess(result);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void replyMeetingInvite(KhReplyInviteConfig config, final KhReplyInviteListener listener) {
+        YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
+        service.postInviteAnswer(config.meetingId, config.meetingNo, config.answer, new ResponseListenerCommon<KhReplyInviteResult>() {
+            @Override
+            public void onFailure(Result result) {
+                if (listener != null) {
+                    listener.onError(result.getCode(), result.getMsg());
+                }
+            }
+
+            @Override
+            public void onResponse(KhReplyInviteResult result) {
+                if (listener != null) {
+                    listener.onSuccess(result);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void createScheduledMeeting(KhCreateScheduledConfig config, KhCreateScheduledListener listener) {
 
     }
 
