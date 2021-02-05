@@ -60,6 +60,10 @@ public class KhSdkManager implements AtAbility {
         load();
     }
 
+    public KhSdkAbility getSdk() {
+        return sdk;
+    }
+
     @Override
     public void enable() {
         sdk.enable();

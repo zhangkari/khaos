@@ -4,11 +4,16 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <Button
-        android:id="@+id/btn_get_token"
+        android:id="@+id/btn_start_meeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="get token"
+        android:text="Start meeting"
         android:textAllCaps="false"
         android:textColor="@android:color/black" />
 

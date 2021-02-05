@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.class100.atropos.generic.AtLog
-import com.class100.hades.http.HaApiCallback
-import com.class100.hades.http.HaApiResponse
-import com.class100.hades.http.HaHttpClient
 import com.class100.khaos.KhAbsSdk
 import com.class100.khaos.KhSdkManager
-import com.class100.khaos.ysx.internal.request.ReqKhSdkToken
-import com.class100.khaos.ysx.internal.response.RespKhSdkToken
+import com.class100.khaos.KhStartMeetingConfig
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -33,8 +30,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setListener() {
-        findViewById<View>(R.id.btn_get_token).setOnClickListener {
-
+        findViewById<View>(R.id.btn_start_meeting).setOnClickListener {
+            val config = KhStartMeetingConfig()
+            config.topic = "Demo"
+            KhSdkManager.getInstance().sdk.startMeeting(config)
         }
     }
 
@@ -42,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         KhSdkManager.getInstance().load(object : KhAbsSdk.OnSdkInitializedListener {
             override fun onInitialized(sdk: KhAbsSdk) {
                 AtLog.d(TAG, "initSDK ok", "++++++")
+                progressBar.visibility = View.GONE
             }
 
             override fun onError() {

@@ -3,9 +3,9 @@ package com.class100.khaos;
 import com.class100.atropos.AtAbility;
 
 public interface KhSdkAbility extends AtAbility {
-    void createMeeting(KhCreateInstantMeetingConfig config);
+    void startMeeting(KhStartMeetingConfig config);
 
-    void joinMeeting();
+    void joinMeeting(KhJoinMeetingConfig config);
 
     void sendMeetingInvite();
 }
