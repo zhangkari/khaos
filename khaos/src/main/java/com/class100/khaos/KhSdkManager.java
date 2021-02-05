@@ -55,8 +55,8 @@ public class KhSdkManager implements AtAbility {
         sdk.load();
     }
 
-    public void load(KhAbsSdk.OnSdkInitializedListener listener) {
-        sdk.listener = listener;
+    public void load(KhAbsSdk.OnSdkInitializeListener listener) {
+        sdk.initializeListener = listener;
         load();
     }
 
@@ -76,7 +76,7 @@ public class KhSdkManager implements AtAbility {
 
     @Override
     public void unload() {
-        sdk.listener = null;
+        sdk.initializeListener = null;
         sdk.unload();
     }
 }

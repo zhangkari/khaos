@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initKhAbilitySdk() {
-        KhSdkManager.getInstance().load(object : KhAbsSdk.OnSdkInitializedListener {
+        KhSdkManager.getInstance().load(object : KhAbsSdk.OnSdkInitializeListener {
             override fun onInitialized(sdk: KhAbsSdk) {
                 AtLog.d(TAG, "initSDK ok", "++++++")
                 progressBar.visibility = View.GONE

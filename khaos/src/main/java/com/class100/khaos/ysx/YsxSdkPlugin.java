@@ -5,9 +5,7 @@ import com.chinamobile.ysx.YSXInstantMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingParams;
 import com.chinamobile.ysx.YSXMeetingService;
-import com.chinamobile.ysx.YSXMeetingServiceListener;
 import com.chinamobile.ysx.YSXMeetingSettingsHelper;
-import com.chinamobile.ysx.YSXMeetingStatus;
 import com.chinamobile.ysx.YSXMessageListener;
 import com.chinamobile.ysx.YSXSdk;
 import com.chinamobile.ysx.YSXSdkAuthenticationListener;
@@ -23,8 +21,8 @@ import com.class100.hades.http.HaApiCallback;
 import com.class100.hades.http.HaApiResponse;
 import com.class100.hades.http.HaHttpClient;
 import com.class100.khaos.KhAbsSdk;
-import com.class100.khaos.KhStartMeetingConfig;
 import com.class100.khaos.KhJoinMeetingConfig;
+import com.class100.khaos.KhStartMeetingConfig;
 import com.class100.khaos.ysx.internal.request.ReqKhSdkToken;
 import com.class100.khaos.ysx.internal.response.RespKhSdkToken;
 
@@ -34,8 +32,9 @@ public class YsxSdkPlugin extends KhAbsSdk {
     private static final String TAG = "YsxSdkPlugin";
 
     // TODO Initialize int libAtNative
-    private static final String APP_KEY = "Iratlr8ZCaVgyPJ5O8xcaNzSUYcEMFd9y1nm";
-    private static final String APP_SECRET = "ft7jnlQj28pqasbbBqTlRdR1LdbzUaqabgIv";
+    private static final String APP_KEY = "FOwvZJf5DjpizygZahOH9hgyciQmgOsXR5eC";
+    private static final String APP_SECRET = "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr";
+    private static final String APP_TOKEN = "HAHWVjyP9VVokyDATOvFBSX06iPGnHtL9It+OpTCDwNDvB8pNULFDR5zH0OA+EV8K5K7bH/8tiShhb07sDiXKTFn1gVrcKm9ckgc1FbHBkwYOpHrNWss/wAf0u5YoUib2zPjG6i0VvwSbQazmoZ5WCbc88Lt9ynKHRDCZaGjNetBJgJn5WnliT17KYxgRYGsFqbh90GDL7o0mY8ipVHLug==";
 
     @Override
     public void load() {
@@ -46,30 +45,29 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 AtLog.d(TAG, "Init ysx sdk result", "errorCode=" + errorCode + ", internalErrorCode=" + internalErrorCode);
                 if (errorCode != YSXError.SUCCESS) {
                     AtLog.d(TAG, "Init ysxSDK. Error", "");
-                    if (listener != null) {
-                        listener.onError();
+                    if (initializeListener != null) {
+                        initializeListener.onError();
                     }
                     return;
                 }
                 AtLog.d(TAG, "Init ysxSDK successfully", "");
-                if (listener != null) {
-                    listener.onInitialized(YsxSdkPlugin.this);
-                }
-                registerSdkMeetingListener();
                 loginSdk();
             }
         });
 
-        sdk.addYsxAuthenticationListener(new YSXSdkAuthenticationListener() {
+    }
+
+    private void registerSdkAuthListener() {
+        YSXSdk.getInstance().addYsxAuthenticationListener(new YSXSdkAuthenticationListener() {
             @Override
             public void onYsxSDKLoginResult(long l) {
                 if (l == 0) {
-                    if (listener != null) {
-                        listener.onInitialized(YsxSdkPlugin.this);
+                    if (initializeListener != null) {
+                        initializeListener.onInitialized(YsxSdkPlugin.this);
                     }
                 } else {
-                    if (listener != null) {
-                        listener.onError();
+                    if (initializeListener != null) {
+                        initializeListener.onError();
                     }
                 }
             }
@@ -86,21 +84,9 @@ public class YsxSdkPlugin extends KhAbsSdk {
         });
     }
 
-    private void registerSdkMeetingListener() {
-        YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
-        service.getCurrentMeetingID();
-        if (service != null) {
-            service.addListener(new YSXMeetingServiceListener() {
-                @Override
-                public void onMeetingStatusChanged(YSXMeetingStatus status, int errCode, int internalErrCode) {
-                    AtLog.d(TAG, "onMeetingStatusChanged", status.name());
-                }
-            });
-        }
-    }
-
     private String getPreviousToken() {
-        return TokenHelper.getToken();
+        return APP_TOKEN;
+//        return TokenHelper.getToken();
     }
 
     private void requestSdkToken(final HaApiCallback<String> listener) {
@@ -110,6 +96,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
         String token = getPreviousToken();
         if (!AtTexts.isEmpty(token)) {
             listener.onSuccess(token);
+            return;
         }
         HaHttpClient.getInstance()
                 .enqueue(new ReqKhSdkToken("15110036167"), new HaApiCallback<HaApiResponse<RespKhSdkToken>>() {
@@ -133,8 +120,8 @@ public class YsxSdkPlugin extends KhAbsSdk {
             @Override
             public void onError(int code, String message) {
                 AtLog.d(TAG, "requestSdkToken", "failed: code:" + code + ", message:" + message);
-                if (listener != null) {
-                    listener.onError();
+                if (initializeListener != null) {
+                    initializeListener.onError();
                 }
             }
 
@@ -150,6 +137,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
             @Override
             public void onLoginResult(LoginResult result) {
                 AtLog.d(TAG, "loginSdkByToken", "token:" + result.getSdktoken());
+                registerSdkAuthListener();
             }
         });
     }
