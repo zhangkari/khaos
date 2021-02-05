@@ -1,5 +1,7 @@
 package com.class100.khaos.ysx;
 
+import android.app.Activity;
+
 import com.chinamobile.ysx.YSXError;
 import com.chinamobile.ysx.YSXInstantMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingOptions;
@@ -168,18 +170,18 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     @Override
-    public void startMeeting(KhStartMeetingConfig config) {
+    public void startMeeting(Activity context, KhStartMeetingConfig config) {
         String participants = buildParticipants(config.participants);
         YSXMeetingSettingsHelper helper = YSXSdk.getInstance().getMeetingSettingsHelper();
         helper.setAutoConnectVoIPWhenJoinMeeting(config.autoConnectAudioJoined);
         helper.setMuteMyMicrophoneWhenJoinMeeting(config.autoMuteMicrophoneJoined);
-        helper.setTurnOffMyVideoWhenJoinMeeting(!config.autoEnableVideoJoined);
+        helper.setTurnOffMyVideoWhenJoinMeeting(!config.autoConnectVideoJoined);
         YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
 
         if (config.category == 0) {
             YSXInstantMeetingOptions options = new YSXInstantMeetingOptions();
             options.no_video = !config.autoConnectVideo;
-            service.startInstantMeeting(env._app, config.topic, config.agenda, participants, options, new YSXMessageListener() {
+            service.startInstantMeeting(context, config.topic, config.agenda, participants, options, new YSXMessageListener() {
                 @Override
                 public void onCallBack(int i, String s) {
                     AtLog.d(TAG, "startInstantMeeting", i + " , " + s);

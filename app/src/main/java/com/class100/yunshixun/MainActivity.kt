@@ -33,7 +33,12 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_start_meeting).setOnClickListener {
             val config = KhStartMeetingConfig()
             config.topic = "Demo"
-            KhSdkManager.getInstance().sdk.startMeeting(config)
+            config.autoConnectAudio = true
+            config.autoConnectVideo = true
+            config.autoConnectAudioJoined = true
+            config.autoConnectVideoJoined = true
+            config.autoMuteMicrophoneJoined = false
+            KhSdkManager.getInstance().sdk.startMeeting(this, config)
         }
     }
 

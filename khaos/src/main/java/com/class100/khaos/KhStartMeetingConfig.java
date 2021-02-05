@@ -9,5 +9,5 @@ public class KhStartMeetingConfig extends KhMeetingConfig {
     public List<String> participants;
     public boolean autoConnectAudioJoined;
     public boolean autoMuteMicrophoneJoined;
-    public boolean autoEnableVideoJoined;
+    public boolean autoConnectVideoJoined;
 }
