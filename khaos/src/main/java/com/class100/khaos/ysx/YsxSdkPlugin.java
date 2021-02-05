@@ -38,9 +38,17 @@ public class YsxSdkPlugin extends KhAbsSdk {
     private static final String APP_SECRET = "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr";
     private static final String APP_TOKEN = "HAHWVjyP9VVokyDATOvFBSX06iPGnHtL9It+OpTCDwNDvB8pNULFDR5zH0OA+EV8K5K7bH/8tiShhb07sDiXKTFn1gVrcKm9ckgc1FbHBkwYOpHrNWss/wAf0u5YoUib2zPjG6i0VvwSbQazmoZ5WCbc88Lt9ynKHRDCZaGjNetBJgJn5WnliT17KYxgRYGsFqbh90GDL7o0mY8ipVHLug==";
 
+    private SdkAuthListener authListener;
+
     @Override
     public void load() {
         YSXSdk sdk = YSXSdk.getInstance();
+        if (sdk.isInitialized()) {
+            AtLog.d(TAG, "load", "sdk is initialized");
+            loginSdk();
+            return;
+        }
+
         sdk.initSDK(env._app, env._app, APP_KEY, APP_SECRET, true, new YSXSdkInitializeListener() {
             @Override
             public void onYSXSdkInitializeResult(int errorCode, int internalErrorCode) {
@@ -60,30 +68,8 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     private void registerSdkAuthListener() {
-        YSXSdk.getInstance().addYsxAuthenticationListener(new YSXSdkAuthenticationListener() {
-            @Override
-            public void onYsxSDKLoginResult(long l) {
-                if (l == 0) {
-                    if (initializeListener != null) {
-                        initializeListener.onInitialized(YsxSdkPlugin.this);
-                    }
-                } else {
-                    if (initializeListener != null) {
-                        initializeListener.onError();
-                    }
-                }
-            }
-
-            @Override
-            public void onYsxSDKLogoutResult(long l) {
-
-            }
-
-            @Override
-            public void onYsxIdentityExpired() {
-
-            }
-        });
+        authListener = new SdkAuthListener(initializeListener, this);
+        YSXSdk.getInstance().addYsxAuthenticationListener(authListener);
     }
 
     private String getPreviousToken() {
@@ -118,6 +104,14 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     private void loginSdk() {
+        if (YSXSdk.getInstance().isLoggedIn()) {
+            AtLog.d(TAG, "loginSdk", "sdk is loggedIn");
+            if (initializeListener != null) {
+                initializeListener.onInitialized(this);
+            }
+            return;
+        }
+
         requestSdkToken(new HaApiCallback<String>() {
             @Override
             public void onError(int code, String message) {
@@ -135,18 +129,20 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     private void loginSdkByToken(String token) {
+        registerSdkAuthListener();
         YSXSdk.getInstance().loginByToken(token, APP_KEY, APP_SECRET, new YSXLoginResultListener() {
             @Override
             public void onLoginResult(LoginResult result) {
                 AtLog.d(TAG, "loginSdkByToken", "token:" + result.getSdktoken());
-                registerSdkAuthListener();
             }
         });
     }
 
     @Override
     public void unload() {
-
+        if (authListener != null) {
+            YSXSdk.getInstance().removeYsxAuthenticationListener(authListener);
+        }
     }
 
     public void enable() {
@@ -169,41 +165,53 @@ public class YsxSdkPlugin extends KhAbsSdk {
         return sb.toString();
     }
 
-    @Override
-    public void startMeeting(Activity context, KhStartMeetingConfig config) {
+    private void startInstantMeeting(Activity context, KhStartMeetingConfig config) {
         String participants = buildParticipants(config.participants);
         YSXMeetingSettingsHelper helper = YSXSdk.getInstance().getMeetingSettingsHelper();
         helper.setAutoConnectVoIPWhenJoinMeeting(config.autoConnectAudioJoined);
         helper.setMuteMyMicrophoneWhenJoinMeeting(config.autoMuteMicrophoneJoined);
         helper.setTurnOffMyVideoWhenJoinMeeting(!config.autoConnectVideoJoined);
-        YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
+        final YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
+        YSXInstantMeetingOptions options = new YSXInstantMeetingOptions();
+        options.no_video = !config.autoConnectVideo;
+        service.startInstantMeeting(context, config.topic, config.agenda, participants, options, new YSXMessageListener() {
+            @Override
+            public void onCallBack(int i, String s) {
+                AtLog.d(TAG, "startInstantMeeting", "i = " + i + ", s = " + s);
+            }
+        });
+    }
 
+    private void startScheduledMeeting(Activity context, KhStartMeetingConfig config) {
+        YSXMeetingSettingsHelper helper = YSXSdk.getInstance().getMeetingSettingsHelper();
+        helper.setAutoConnectVoIPWhenJoinMeeting(config.autoConnectAudioJoined);
+        helper.setMuteMyMicrophoneWhenJoinMeeting(config.autoMuteMicrophoneJoined);
+        helper.setTurnOffMyVideoWhenJoinMeeting(!config.autoConnectVideoJoined);
+        YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
+        YSXStartMeetingOptions opts = new YSXStartMeetingOptions();
+        opts.no_audio = !config.autoConnectAudio;
+        opts.no_video = !config.autoConnectVideo;
+        YSXStartMeetingParams4NormalUser params = new YSXStartMeetingParams4NormalUser();
+        params.meetingNo = config.No;
+        service.startMeetingWithParams(context, config.id, config.type, config.No, params, opts, new YSXMessageListener() {
+            @Override
+            public void onCallBack(int i, String s) {
+                AtLog.d(TAG, "startScheduledMeeting", i + " , " + s);
+            }
+        });
+    }
+
+    @Override
+    public void startMeeting(Activity context, KhStartMeetingConfig config) {
         if (config.category == 0) {
-            YSXInstantMeetingOptions options = new YSXInstantMeetingOptions();
-            options.no_video = !config.autoConnectVideo;
-            service.startInstantMeeting(context, config.topic, config.agenda, participants, options, new YSXMessageListener() {
-                @Override
-                public void onCallBack(int i, String s) {
-                    AtLog.d(TAG, "startInstantMeeting", i + " , " + s);
-                }
-            });
+            startInstantMeeting(context, config);
         } else if (config.category == 1) {
-            YSXStartMeetingOptions opts = new YSXStartMeetingOptions();
-            opts.no_audio = !config.autoConnectAudio;
-            opts.no_video = !config.autoConnectVideo;
-            YSXStartMeetingParams4NormalUser params = new YSXStartMeetingParams4NormalUser();
-            params.meetingNo = config.No;
-            service.startMeetingWithParams(env._app, config.id, config.type, config.No, params, opts, new YSXMessageListener() {
-                @Override
-                public void onCallBack(int i, String s) {
-                    AtLog.d(TAG, "startScheduledMeeting", i + " , " + s);
-                }
-            });
+            startScheduledMeeting(context, config);
         }
     }
 
     @Override
-    public void joinMeeting(KhJoinMeetingConfig config) {
+    public void joinMeeting(Activity context, KhJoinMeetingConfig config) {
         YSXSdk sdk = YSXSdk.getInstance();
         YSXJoinMeetingOptions opts = new YSXJoinMeetingOptions();
         opts.no_audio = config.autoConnectAudio;
@@ -214,7 +222,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
         params.displayName = config.displayName;
 
         YSXMeetingService service = sdk.getMeetingService();
-        service.joinMeetingWithParams(env._app, config.id, config.type, params, opts, new YSXMessageListener() {
+        service.joinMeetingWithParams(context, config.id, config.type, params, opts, new YSXMessageListener() {
             @Override
             public void onCallBack(int i, String s) {
                 AtLog.d(TAG, "joinInstantMeeting", i + " , " + s);
@@ -225,5 +233,38 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public void sendMeetingInvite() {
 
+    }
+
+    static class SdkAuthListener implements YSXSdkAuthenticationListener {
+        private final OnSdkInitializeListener listener;
+        private final YsxSdkPlugin plugin;
+
+        public SdkAuthListener(OnSdkInitializeListener listener, YsxSdkPlugin plugin) {
+            this.listener = listener;
+            this.plugin = plugin;
+        }
+
+        @Override
+        public void onYsxSDKLoginResult(long l) {
+            if (l == 0) {
+                if (listener != null) {
+                    listener.onInitialized(plugin);
+                }
+            } else {
+                if (listener != null) {
+                    listener.onError();
+                }
+            }
+        }
+
+        @Override
+        public void onYsxSDKLogoutResult(long l) {
+
+        }
+
+        @Override
+        public void onYsxIdentityExpired() {
+
+        }
     }
 }

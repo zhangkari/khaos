@@ -5,9 +5,11 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.class100.atropos.generic.AtLog
 import com.class100.khaos.KhAbsSdk
+import com.class100.khaos.KhJoinMeetingConfig
 import com.class100.khaos.KhSdkManager
 import com.class100.khaos.KhStartMeetingConfig
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -32,13 +34,26 @@ class MainActivity : AppCompatActivity() {
     private fun setListener() {
         findViewById<View>(R.id.btn_start_meeting).setOnClickListener {
             val config = KhStartMeetingConfig()
-            config.topic = "Demo"
+//            config.id = UUID.randomUUID().toString()
+            config.No = et_meeting_no.text.toString()
+            config.topic = et_meeting_topic.text.toString()
             config.autoConnectAudio = true
             config.autoConnectVideo = true
             config.autoConnectAudioJoined = true
             config.autoConnectVideoJoined = true
             config.autoMuteMicrophoneJoined = false
+            config.participants = listOf("15928695284");
+            config.category = if (check_scheduled_meeting.isChecked) 1 else 0
             KhSdkManager.getInstance().sdk.startMeeting(this, config)
+        }
+
+        findViewById<View>(R.id.btn_join_meeting).setOnClickListener {
+            val config = KhJoinMeetingConfig()
+            config.No = et_meeting_no.text.toString()
+            config.autoConnectAudio = true
+            config.autoConnectVideo = true
+            config.displayName = "RedMi 6 Pro"
+            KhSdkManager.getInstance().sdk.joinMeeting(this, config)
         }
     }
 
