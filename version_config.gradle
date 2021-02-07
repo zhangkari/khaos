@@ -1,9 +1,8 @@
 ext.depends = [:]
 
-def app = [:]
-app.bundleId = "com.class100.tv"
-app.versionName = "0.0.1"
-app.versionCode = 000000001
+def artifact = [:]
+artifact.VName = "0.0.3"
+artifact.VCode = 000003
 
 def build = [:]
 build.compileSdkVersion = 30
@@ -27,7 +26,7 @@ test.andJunit = "androidx.test.ext:junit:1.1.2"
 test.espresso = 'androidx.test.espresso:espresso-core:3.3.0'
 
 def depends = [:]
-depends.app = app
+depends.artifact = artifact
 depends.build = build
 depends.libs = libs
 depends.support = support
