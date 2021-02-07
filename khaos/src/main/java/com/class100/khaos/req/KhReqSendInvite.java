@@ -1,6 +1,6 @@
-package com.class100.khaos;
+package com.class100.khaos.req;
 
-public class KhSendInviteConfig {
+public class KhReqSendInvite {
     public String meetingId;
     public String userId;
     public String token;
