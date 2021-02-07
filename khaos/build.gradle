@@ -50,6 +50,7 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.aar'])
     implementation support.appcompat
+    implementation support.constraitLayout
     implementation 'androidx.cardview:cardview:1.0.0'
     api "com.class100.atropos:atropos:0.0.6"
     api("com.class100.hades:hades:0.0.5") {
