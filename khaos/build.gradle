@@ -6,8 +6,8 @@ def build = depends.build
 def support = depends.support
 def test = depends.test
 
-def version_code = 000001
-def version_name = "0.0.1"
+def version_code = 000002
+def version_name = "0.0.2"
 
 def USER = "zhangkari"
 def GROUP = "com.class100.khaos"
