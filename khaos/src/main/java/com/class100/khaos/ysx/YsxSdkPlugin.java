@@ -26,13 +26,13 @@ import com.class100.hades.http.HaApiResponse;
 import com.class100.hades.http.HaHttpClient;
 import com.class100.khaos.KhAbsSdk;
 import com.class100.khaos.KhSdkListener;
+import com.class100.khaos.req.KhReqCreateScheduled;
 import com.class100.khaos.req.KhReqDeleteMeeting;
 import com.class100.khaos.req.KhReqGetMeetingInfo;
 import com.class100.khaos.req.KhReqGetMeetingStatus;
+import com.class100.khaos.req.KhReqGetMeetings;
 import com.class100.khaos.req.KhReqJoinMeeting;
 import com.class100.khaos.req.KhReqReplyInvite;
-import com.class100.khaos.req.KhReqCreateScheduled;
-import com.class100.khaos.req.KhReqGetMeetings;
 import com.class100.khaos.req.KhReqSendInvite;
 import com.class100.khaos.req.KhReqStartMeeting;
 import com.class100.khaos.req.KhReqUpdateMeeting;
@@ -50,10 +50,9 @@ import com.class100.khaos.ysx.internal.response.RespKhSdkToken;
 public class YsxSdkPlugin extends KhAbsSdk {
     private static final String TAG = "YsxSdkPlugin";
 
-    // TODO Initialize int libAtNative
+    // TODO Initialize int libNativeAtropos
     private static final String APP_KEY = "FOwvZJf5DjpizygZahOH9hgyciQmgOsXR5eC";
     private static final String APP_SECRET = "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr";
-    private static final String APP_TOKEN = "38jEj+4y41LzZc6wekmvP9Dz5ezF52CKb67BJuTRxVMIVAUjkGHm/2hGsZkPSxQK3gzs9dslwfyYlywmvHULqStbKxvrI25bkzNYXZSJaVmUEtgTZERxtYVXhM0If3ns6YTRR2L/NbZxd9hcLJgu3cCh0EMP9qRaxyisWQck7MdkXHN/LaSuCjKQ+fPC8XjmVoL37SjLNsGUJKhQU/iAUg==";
 
     private SdkAuthListener authListener;
 
@@ -90,8 +89,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     private String getPreviousToken() {
-        return APP_TOKEN;
-//        return TokenHelper.getToken();
+        return YsxSdkHelper.getToken();
     }
 
     private void requestSdkToken(final HaApiCallback<String> listener) {
@@ -104,7 +102,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
             return;
         }
         HaHttpClient.getInstance()
-                .enqueue(new ReqKhSdkToken("15110036167"), new HaApiCallback<HaApiResponse<RespKhSdkToken>>() {
+                .enqueue(new ReqKhSdkToken("56812345678"), new HaApiCallback<HaApiResponse<RespKhSdkToken>>() {
                     @Override
                     public void onError(int code, String message) {
                         listener.onError(code, message);

@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_join_meeting).setOnClickListener {
             val config = KhReqJoinMeeting()
             config.No = et_meeting_no.text.toString()
+            config.id = et_meeting_no.text.toString()
             config.autoConnectAudio = true
             config.autoConnectVideo = true
             config.displayName = "RedMi 6 Pro"
