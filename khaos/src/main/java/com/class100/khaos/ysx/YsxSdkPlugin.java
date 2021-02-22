@@ -17,6 +17,7 @@ import com.chinamobile.ysx.YSXStartMeetingParams4NormalUser;
 import com.chinamobile.ysx.auther.LoginResult;
 import com.chinamobile.ysx.auther.YSXLoginResultListener;
 import com.chinamobile.ysx.bean.Result;
+import com.chinamobile.ysx.bean.ScheduledMeetingInfo;
 import com.chinamobile.ysx.bean.YSXMeetingList;
 import com.chinamobile.ysx.responselistener.ResponseListenerCommon;
 import com.class100.atropos.generic.AtLog;
@@ -54,7 +55,12 @@ public class YsxSdkPlugin extends KhAbsSdk {
     private static final String APP_KEY = "FOwvZJf5DjpizygZahOH9hgyciQmgOsXR5eC";
     private static final String APP_SECRET = "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr";
 
+    private final String mobilePhone;
     private SdkAuthListener authListener;
+
+    public YsxSdkPlugin(String phone) {
+        mobilePhone = phone;
+    }
 
     @Override
     public void load() {
@@ -102,7 +108,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
             return;
         }
         HaHttpClient.getInstance()
-                .enqueue(new ReqKhSdkToken("56812345678"), new HaApiCallback<HaApiResponse<RespKhSdkToken>>() {
+                .enqueue(new ReqKhSdkToken(mobilePhone), new HaApiCallback<HaApiResponse<RespKhSdkToken>>() {
                     @Override
                     public void onError(int code, String message) {
                         listener.onError(code, message);
@@ -110,10 +116,12 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
                     @Override
                     public void onSuccess(HaApiResponse<RespKhSdkToken> resp) {
-                        AtLog.d(TAG, "requestSdkToken", "token:" + resp.data.token);
-                        // todo
-                        YsxSdkHelper.saveToken(resp.data.token, 0);
-                        listener.onSuccess(resp.data.token);
+                        AtLog.d(TAG, "requestSdkToken", "resp code:" + resp.code + ", content code:" + resp.data.code);
+                        if (resp.code == 0 && resp.data != null && resp.data.code == 200) {
+                            AtLog.d(TAG, "requestSdkToken", "token:" + resp.data.token);
+                            YsxSdkHelper.saveToken(resp.data.token, 0);
+                            listener.onSuccess(resp.data.token);
+                        }
                     }
                 });
     }
@@ -144,11 +152,16 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     private void loginSdkByToken(String token) {
+        AtLog.d(TAG, "loginByToken", "previous token:" + token);
         registerSdkAuthListener();
         YSXSdk.getInstance().loginByToken(token, APP_KEY, APP_SECRET, new YSXLoginResultListener() {
             @Override
             public void onLoginResult(LoginResult result) {
-                AtLog.d(TAG, "loginSdkByToken", "token:" + result.getSdktoken());
+                AtLog.d(TAG, "loginSdkByToken", "new token:" + result.getSdktoken());
+                if (result.code == 0) {
+                    // todo expire
+                    YsxSdkHelper.saveToken(result.getSdktoken(), 0);
+                }
             }
         });
     }
@@ -292,9 +305,9 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 String.valueOf(config.openParticipantsVideo),
                 String.valueOf(config.duration),
                 YsxSdkHelper.formatTime(config.startTime),
-                "utc start tme",
+                YsxSdkHelper.formatTime(config.startTime - 8 * 60 * 60 * 1000),
                 config.token,
-                new ResponseListenerCommon<KhRespCreateScheduled>() {
+                new ResponseListenerCommon<ScheduledMeetingInfo>() {
                     @Override
                     public void onFailure(Result result) {
                         if (listener != null) {
@@ -303,13 +316,33 @@ public class YsxSdkPlugin extends KhAbsSdk {
                     }
 
                     @Override
-                    public void onResponse(KhRespCreateScheduled result) {
+                    public void onResponse(ScheduledMeetingInfo result) {
                         if (listener != null) {
-                            listener.onSuccess(result);
+                            if (result.getCode() == 0) {
+                                listener.onSuccess(adaptScheduledMeetingInfo(result));
+                            } else {
+                                listener.onError(result.getCode(), result.getMessage());
+                            }
                         }
                     }
                 }
         );
+    }
+
+    private KhRespCreateScheduled adaptScheduledMeetingInfo(ScheduledMeetingInfo info) {
+        KhRespCreateScheduled resp = new KhRespCreateScheduled();
+        if (info.getData() != null) {
+            resp.duration = info.getData().getDuration();
+            resp.endTime = info.getData().getEndTime();
+            resp.id = info.getData().getId();
+            resp.meetingNo = info.getData().getMeetingNo();
+            resp.meetingType = info.getData().getMeetingType();
+            resp.openHostVideo = info.getData().getOpenHostVideo();
+            resp.startTime = info.getData().getStartTime();
+            resp.status = info.getData().getStatus();
+            resp.topic = info.getData().getTopic();
+        }
+        return resp;
     }
 
     private void getMeetingInfoById(KhReqGetMeetingInfo config, final KhSdkListener<KhRespGetMeetingInfo> listener) {

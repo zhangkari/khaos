@@ -1,5 +1,6 @@
 package com.class100.khaos;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.StringDef;
 
 import com.class100.atropos.AtAbility;
@@ -7,6 +8,8 @@ import com.class100.khaos.ysx.YsxSdkPlugin;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
+import java.util.Map;
 
 public class KhSdkManager implements AtAbility {
     public static final String SDK_YSX = "sdk_ysx";
@@ -18,24 +21,31 @@ public class KhSdkManager implements AtAbility {
     }
 
     private static volatile KhSdkManager _instance;
+    private static KhAbsSdk currentSdk;
+    private static final Map<String, KhAbsSdk> cachedSdk = new HashMap<>(4);
 
-    private KhAbsSdk sdk;
-
-    private KhSdkManager() {
-        sdk = new YsxSdkPlugin();
+    @MainThread
+    public static void registerYsxSdk(String mobile) {
+        registerSdk(SDK_YSX, new YsxSdkPlugin(mobile));
     }
 
-    private KhSdkManager(@KhSdkChannel String channel) {
-        if (SDK_YSX.equalsIgnoreCase(channel)) {
-            sdk = new YsxSdkPlugin();
+    @MainThread
+    public static void registerSdk(String key, KhAbsSdk sdk) {
+        cachedSdk.put(key, sdk);
+        if (currentSdk == null) {
+            currentSdk = sdk;
         }
     }
 
+    @MainThread
     public static void switchChannel(@KhSdkChannel String channel) {
-        _instance.sdk.disable();
-        _instance.sdk.unload();
-        if (channel.equalsIgnoreCase(SDK_YSX)) {
-            _instance = new KhSdkManager(channel);
+        KhAbsSdk sdk = cachedSdk.get(channel);
+        if (sdk != null) {
+            if (currentSdk != null) {
+                currentSdk.disable();
+                currentSdk.unload();
+            }
+            currentSdk = sdk;
         }
     }
 
@@ -52,31 +62,41 @@ public class KhSdkManager implements AtAbility {
 
     @Override
     public void load() {
-        sdk.load();
+        if (currentSdk != null) {
+            currentSdk.load();
+        }
     }
 
     public void load(KhAbsSdk.OnSdkInitializeListener listener) {
-        sdk.initializeListener = listener;
-        load();
+        if (currentSdk != null) {
+            currentSdk.initializeListener = listener;
+            load();
+        }
     }
 
     public KhSdkAbility getSdk() {
-        return sdk;
+        return currentSdk;
     }
 
     @Override
     public void enable() {
-        sdk.enable();
+        if (currentSdk != null) {
+            currentSdk.enable();
+        }
     }
 
     @Override
     public void disable() {
-        sdk.disable();
+        if (currentSdk != null) {
+            currentSdk.disable();
+        }
     }
 
     @Override
     public void unload() {
-        sdk.initializeListener = null;
-        sdk.unload();
+        if (currentSdk != null) {
+            currentSdk.initializeListener = null;
+            currentSdk.unload();
+        }
     }
 }

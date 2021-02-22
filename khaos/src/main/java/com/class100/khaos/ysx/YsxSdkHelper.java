@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-final class YsxSdkHelper {
+public final class YsxSdkHelper {
     private static final String KEY_TOKEN = "_ysx_key_token";
     private static final String KEY_EXPIRED = "_ysx_key_expired";
 
@@ -28,12 +28,16 @@ final class YsxSdkHelper {
 
     public static String getToken() {
         String token = AtPrefs.get(KEY_TOKEN, "");
+
         if (!AtTexts.isEmpty(token)) {
             if (System.currentTimeMillis() + 1000L /* 1s buffer */ < AtPrefs.get(KEY_EXPIRED, 0L)) {
                 return token;
             }
         }
-        return "";
+
+        // todo
+        // return "";
+        return token;
     }
 
     public static String buildParticipants(List<String> list) {

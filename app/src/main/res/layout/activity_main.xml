@@ -5,53 +5,121 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:id="@+id/et_meeting_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="input meeting No"
-        android:inputType="number"
-        android:minWidth="100dp" />
-
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/layout_sign_in"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/et_meeting_topic"
+            android:id="@+id/et_mobile_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="艺考第109场" />
-
-        <CheckBox
-            android:id="@+id/check_scheduled_meeting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="预定会议" />
+            android:hint="输入手机号"
+            android:inputType="phone"
+            android:minWidth="100dp" />
 
         <Button
-            android:id="@+id/btn_start_meeting"
+            android:id="@+id/btn_sign_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start meeting"
+            android:paddingLeft="16dp"
+            android:paddingTop="4dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="4dp"
+            android:text="登录"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/layout_signed_in"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/et_meeting_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="input meeting No"
+            android:inputType="number"
+            android:minWidth="100dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_meeting_topic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="艺考第109场" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/check_scheduled_meeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="预定会议" />
+
+            <LinearLayout
+                android:id="@+id/layout_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/et_user1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="输入参会人1"
+                    android:inputType="phone"
+                    android:minWidth="100dp" />
+
+                <EditText
+                    android:id="@+id/et_user2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="输入参会人2"
+                    android:inputType="phone"
+                    android:minWidth="100dp" />
+
+                <Button
+                    android:id="@+id/btn_create_schedule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="创建预约会议"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_start_meeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start meeting"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_join_meeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Join meeting"
             android:textAllCaps="false"
             android:textColor="@android:color/black" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_join_meeting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Join meeting"
-        android:textAllCaps="false"
-        android:textColor="@android:color/black" />
-
 </LinearLayout>
