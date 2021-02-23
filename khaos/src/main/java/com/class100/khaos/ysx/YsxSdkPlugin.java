@@ -94,19 +94,11 @@ public class YsxSdkPlugin extends KhAbsSdk {
         YSXSdk.getInstance().addYsxAuthenticationListener(authListener);
     }
 
-    private String getPreviousToken() {
-        return YsxSdkHelper.getToken();
-    }
-
     private void requestSdkToken(final HaApiCallback<String> listener) {
         if (listener == null) {
             return;
         }
-        String token = getPreviousToken();
-        if (!AtTexts.isEmpty(token)) {
-            listener.onSuccess(token);
-            return;
-        }
+
         HaHttpClient.getInstance()
                 .enqueue(new ReqKhSdkToken(mobilePhone), new HaApiCallback<HaApiResponse<RespKhSdkToken>>() {
                     @Override
@@ -119,7 +111,6 @@ public class YsxSdkPlugin extends KhAbsSdk {
                         AtLog.d(TAG, "requestSdkToken", "resp code:" + resp.code + ", content code:" + resp.data.code);
                         if (resp.code == 0 && resp.data != null && resp.data.code == 200) {
                             AtLog.d(TAG, "requestSdkToken", "token:" + resp.data.token);
-                            YsxSdkHelper.saveToken(resp.data.token, 0);
                             listener.onSuccess(resp.data.token);
                         }
                     }
@@ -145,8 +136,8 @@ public class YsxSdkPlugin extends KhAbsSdk {
             }
 
             @Override
-            public void onSuccess(String content) {
-                loginSdkByToken(content);
+            public void onSuccess(String token) {
+                loginSdkByToken(token);
             }
         });
     }
@@ -159,8 +150,9 @@ public class YsxSdkPlugin extends KhAbsSdk {
             public void onLoginResult(LoginResult result) {
                 AtLog.d(TAG, "loginSdkByToken", "new token:" + result.getSdktoken());
                 if (result.code == 0) {
-                    // todo expire
-                    YsxSdkHelper.saveToken(result.getSdktoken(), 0);
+                    String userId = YSXSdk.getInstance().getYSXuser().getUserId();
+                    String userName = YSXSdk.getInstance().getYSXuser().getUserName();
+                    AtLog.d(TAG, "loginSdkByToken", "userId:" + userId + ", userName:" + userName);
                 }
             }
         });
@@ -468,7 +460,8 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public void getMeetings(KhReqGetMeetings config, final KhSdkListener<KhRespGetMeetings> listener) {
         YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
-        service.listMeeting(YsxSdkHelper.formatTime(config.startTime),
+        service.listMeeting(
+                YsxSdkHelper.formatTime(config.startTime),
                 YsxSdkHelper.formatTime(config.endTime),
                 config.status,
                 config.pageNo,

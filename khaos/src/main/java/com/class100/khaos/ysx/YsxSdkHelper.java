@@ -1,9 +1,8 @@
 package com.class100.khaos.ysx;
 
+import com.chinamobile.ysx.YSXSdk;
 import com.chinamobile.ysx.bean.YSXMeetingList;
-import com.class100.atropos.env.context.AtPrefs;
 import com.class100.atropos.generic.AtCollections;
-import com.class100.atropos.generic.AtTexts;
 import com.class100.khaos.resp.KhRespGetMeetings;
 
 import java.text.SimpleDateFormat;
@@ -13,31 +12,12 @@ import java.util.List;
 import java.util.Locale;
 
 public final class YsxSdkHelper {
-    private static final String KEY_TOKEN = "_ysx_key_token";
-    private static final String KEY_EXPIRED = "_ysx_key_expired";
-
     private static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat(PATTERN, Locale.CHINESE);
 
-    public static void saveToken(String token, long expiredAt) {
-        if (!AtTexts.isEmpty(token)) {
-            AtPrefs.put(KEY_TOKEN, token);
-            AtPrefs.put(KEY_EXPIRED, expiredAt);
-        }
-    }
 
     public static String getToken() {
-        String token = AtPrefs.get(KEY_TOKEN, "");
-
-        if (!AtTexts.isEmpty(token)) {
-            if (System.currentTimeMillis() + 1000L /* 1s buffer */ < AtPrefs.get(KEY_EXPIRED, 0L)) {
-                return token;
-            }
-        }
-
-        // todo
-        // return "";
-        return token;
+        return YSXSdk.getInstance().getYSXuser().getToken();
     }
 
     public static String buildParticipants(List<String> list) {

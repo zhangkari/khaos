@@ -121,5 +121,15 @@
             android:text="Join meeting"
             android:textAllCaps="false"
             android:textColor="@android:color/black" />
+
+        <Button
+            android:id="@+id/btn_query_meetings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Query meetings"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black" />
+
     </LinearLayout>
 </LinearLayout>

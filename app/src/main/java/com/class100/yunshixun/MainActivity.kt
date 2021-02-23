@@ -12,9 +12,11 @@ import com.class100.khaos.KhAbsSdk
 import com.class100.khaos.KhSdkListener
 import com.class100.khaos.KhSdkManager
 import com.class100.khaos.req.KhReqCreateScheduled
+import com.class100.khaos.req.KhReqGetMeetings
 import com.class100.khaos.req.KhReqJoinMeeting
 import com.class100.khaos.req.KhReqStartMeeting
 import com.class100.khaos.resp.KhRespCreateScheduled
+import com.class100.khaos.resp.KhRespGetMeetings
 import com.class100.khaos.ysx.YsxSdkHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -34,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        initKhAbilitySdk()
         setListener()
     }
 
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             config.No = et_meeting_no.text.toString()
             config.agenda = "Agenda-Welcome";
             config.topic = et_meeting_topic.text.toString()
-            config.duration = 60 // 10 min
+            config.duration = 8 * 60 // 8 * 60 min
             config.startTime = System.currentTimeMillis() + 2 * 60 * 1000;
             config.autoConnectAudio = true
             config.autoConnectVideo = true
@@ -95,6 +96,27 @@ class MainActivity : AppCompatActivity() {
             config.autoConnectVideo = true
             config.displayName = "RedMi 6 Pro"
             KhSdkManager.getInstance().sdk.joinMeeting(this, config)
+        }
+
+        findViewById<View>(R.id.btn_query_meetings).setOnClickListener {
+            val config = KhReqGetMeetings()
+            config.status = 1;
+            config.token = YsxSdkHelper.getToken()
+            KhSdkManager.getInstance().sdk.getMeetings(
+                config,
+                object : KhSdkListener<KhRespGetMeetings> {
+                    override fun onSuccess(result: KhRespGetMeetings) {
+                        AtLog.d(
+                            TAG,
+                            "queryMeetings",
+                            " success: meetings: ${result.meetings?.size}"
+                        )
+                    }
+
+                    override fun onError(code: Int, message: String?) {
+                        AtLog.d(TAG, "queryMeetings", "failed: message:$message")
+                    }
+                })
         }
     }
 
