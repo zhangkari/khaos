@@ -89,6 +89,10 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     }
 
+    private void customizeMeetingUI(boolean customized) {
+        YSXSdk.getInstance().getMeetingSettingsHelper().setCustomizedMeetingUIEnabled(customized);
+    }
+
     private void registerSdkAuthListener() {
         authListener = new SdkAuthListener(initializeListener, this);
         YSXSdk.getInstance().addYsxAuthenticationListener(authListener);

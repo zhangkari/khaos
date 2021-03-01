@@ -37,6 +37,12 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
     publish {
         userOrg = USER
         groupId = GROUP
@@ -48,7 +54,7 @@ android {
 }
 
 dependencies {
-    api fileTree(dir: 'libs', include: ['*.aar'])
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation support.appcompat
     implementation support.constraitLayout
     implementation 'androidx.cardview:cardview:1.0.0'
