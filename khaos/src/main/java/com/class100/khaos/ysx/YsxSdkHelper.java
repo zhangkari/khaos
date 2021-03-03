@@ -15,7 +15,6 @@ public final class YsxSdkHelper {
     private static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat(PATTERN, Locale.CHINESE);
 
-
     public static String getToken() {
         return YSXSdk.getInstance().getYSXuser().getToken();
     }

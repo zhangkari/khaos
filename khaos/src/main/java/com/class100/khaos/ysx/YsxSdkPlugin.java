@@ -16,6 +16,7 @@ import com.chinamobile.ysx.YSXStartMeetingOptions;
 import com.chinamobile.ysx.YSXStartMeetingParams4NormalUser;
 import com.chinamobile.ysx.auther.LoginResult;
 import com.chinamobile.ysx.auther.YSXLoginResultListener;
+import com.chinamobile.ysx.auther.bean.YSXUser;
 import com.chinamobile.ysx.bean.Result;
 import com.chinamobile.ysx.bean.ScheduledMeetingInfo;
 import com.chinamobile.ysx.bean.YSXMeetingList;
@@ -27,6 +28,7 @@ import com.class100.hades.http.HaApiResponse;
 import com.class100.hades.http.HaHttpClient;
 import com.class100.khaos.KhAbsSdk;
 import com.class100.khaos.KhSdkListener;
+import com.class100.khaos.KhUserProfile;
 import com.class100.khaos.req.KhReqCreateScheduled;
 import com.class100.khaos.req.KhReqDeleteMeeting;
 import com.class100.khaos.req.KhReqGetMeetingInfo;
@@ -487,6 +489,17 @@ public class YsxSdkPlugin extends KhAbsSdk {
                     }
                 }
         );
+    }
+
+    @Override
+    public KhUserProfile getUserProfile() {
+        YSXUser user = YSXSdk.getInstance().getYSXuser();
+        return new KhUserProfile(user.getUserId(), user.getUserName());
+    }
+
+    @Override
+    public void logout() {
+        YSXSdk.getInstance().sdkLogout();
     }
 
     static class SdkAuthListener implements YSXSdkAuthenticationListener {
