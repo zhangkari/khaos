@@ -7,7 +7,9 @@ import com.chinamobile.ysx.YSXInstantMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingParams;
 import com.chinamobile.ysx.YSXMeetingService;
+import com.chinamobile.ysx.YSXMeetingServiceListener;
 import com.chinamobile.ysx.YSXMeetingSettingsHelper;
+import com.chinamobile.ysx.YSXMeetingStatus;
 import com.chinamobile.ysx.YSXMessageListener;
 import com.chinamobile.ysx.YSXSdk;
 import com.chinamobile.ysx.YSXSdkAuthenticationListener;
@@ -21,6 +23,7 @@ import com.chinamobile.ysx.bean.Result;
 import com.chinamobile.ysx.bean.ScheduledMeetingInfo;
 import com.chinamobile.ysx.bean.YSXMeetingList;
 import com.chinamobile.ysx.responselistener.ResponseListenerCommon;
+import com.class100.atropos.generic.AtCollections;
 import com.class100.atropos.generic.AtLog;
 import com.class100.atropos.generic.AtTexts;
 import com.class100.hades.http.HaApiCallback;
@@ -32,7 +35,6 @@ import com.class100.khaos.KhUserProfile;
 import com.class100.khaos.req.KhReqCreateScheduled;
 import com.class100.khaos.req.KhReqDeleteMeeting;
 import com.class100.khaos.req.KhReqGetMeetingInfo;
-import com.class100.khaos.req.KhReqGetMeetingStatus;
 import com.class100.khaos.req.KhReqGetMeetings;
 import com.class100.khaos.req.KhReqJoinMeeting;
 import com.class100.khaos.req.KhReqReplyInvite;
@@ -42,13 +44,16 @@ import com.class100.khaos.req.KhReqUpdateMeeting;
 import com.class100.khaos.resp.KhRespCreateScheduled;
 import com.class100.khaos.resp.KhRespDeleteMeeting;
 import com.class100.khaos.resp.KhRespGetMeetingInfo;
-import com.class100.khaos.resp.KhRespGetMeetingStatus;
 import com.class100.khaos.resp.KhRespGetMeetings;
 import com.class100.khaos.resp.KhRespReplyInvite;
 import com.class100.khaos.resp.KhRespSendInvite;
 import com.class100.khaos.resp.KhRespUpdateMeeting;
 import com.class100.khaos.ysx.internal.request.ReqKhSdkToken;
 import com.class100.khaos.ysx.internal.response.RespKhSdkToken;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class YsxSdkPlugin extends KhAbsSdk {
     private static final String TAG = "YsxSdkPlugin";
@@ -66,6 +71,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     @Override
     public void load() {
+        customizeMeetingUI(true);
         YSXSdk sdk = YSXSdk.getInstance();
         if (sdk.isInitialized()) {
             AtLog.d(TAG, "load", "sdk is initialized");
@@ -96,7 +102,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     private void registerSdkAuthListener() {
-        authListener = new SdkAuthListener(initializeListener, this);
+        authListener = new SdkAuthListener(meetingListeners, initializeListener, this);
         YSXSdk.getInstance().addYsxAuthenticationListener(authListener);
     }
 
@@ -188,6 +194,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
         final YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
         YSXInstantMeetingOptions options = new YSXInstantMeetingOptions();
         options.no_video = !config.autoConnectVideo;
+        options.no_driving_mode = true;
         service.startInstantMeeting(context, config.topic, config.agenda, participants, options, new YSXMessageListener() {
             @Override
             public void onCallBack(int i, String s) {
@@ -395,23 +402,9 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     @Override
-    public void getMeetingStatus(KhReqGetMeetingStatus config, final KhSdkListener<KhRespGetMeetingStatus> listener) {
+    public KhMeetingStatus getMeetingStatus() {
         YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
-        service.getMeetingStatusByMeetingId(config.meetingId, config.token, new ResponseListenerCommon<KhRespGetMeetingStatus>() {
-            @Override
-            public void onFailure(Result result) {
-                if (listener != null) {
-                    listener.onError(result.getCode(), result.getMsg());
-                }
-            }
-
-            @Override
-            public void onResponse(KhRespGetMeetingStatus result) {
-                if (listener != null) {
-                    listener.onSuccess(result);
-                }
-            }
-        });
+        return adaptMeetingStatus(service.getMeetingStatus());
     }
 
     @Override
@@ -498,28 +491,83 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     @Override
+    public void rotateLocalVideo(int degree) {
+        YSXSdk.getInstance()
+                .getInMeetingService()
+                .getInMeetingVideoController()
+                .rotateMyVideo(degree);
+    }
+
+    @Override
+    public void setMeetingUserChangedListener(final OnMeetingUserChangedListener listener) {
+        if (listener == null) {
+            return;
+        }
+        MeetingUserCallback.getInstance().addListener(new MeetingUserCallback.UserEvent() {
+            @Override
+            public void onMeetingUserJoin(List<Long> list) {
+                listener.onMeetingUserJoin(adapt(list));
+            }
+
+            @Override
+            public void onMeetingUserLeave(List<Long> list) {
+                listener.onMeetingUserLeave(adapt(list));
+            }
+        });
+    }
+
+    private List<String> adapt(List<Long> list) {
+        if (AtCollections.isEmpty(list)) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>(list.size());
+        for (long val : list) {
+            result.add(String.valueOf(val));
+        }
+        return result;
+    }
+
+    @Override
+    public void setUserVideoStatusChangedListener(final OnUserVideoStatusChangedListener listener) {
+        if (listener == null) {
+            return;
+        }
+        MeetingVideoCallback.getInstance().addListener(new MeetingVideoCallback.VideoEvent() {
+            @Override
+            public void onUserVideoStatusChanged(long userId) {
+                listener.onUserVideoStatusChanged(String.valueOf(userId));
+            }
+        });
+    }
+
+    @Override
     public void logout() {
         YSXSdk.getInstance().sdkLogout();
     }
 
     static class SdkAuthListener implements YSXSdkAuthenticationListener {
-        private final OnSdkInitializeListener listener;
+        private final Collection<OnMeetingStatusChangedListener> statusChangedListeners;
+        private final OnSdkInitializeListener initializeListener;
         private final YsxSdkPlugin plugin;
 
-        public SdkAuthListener(OnSdkInitializeListener listener, YsxSdkPlugin plugin) {
-            this.listener = listener;
+        public SdkAuthListener(Collection<OnMeetingStatusChangedListener> listeners, OnSdkInitializeListener listener, YsxSdkPlugin plugin) {
+            statusChangedListeners = listeners;
+            initializeListener = listener;
             this.plugin = plugin;
         }
 
         @Override
         public void onYsxSDKLoginResult(long l) {
             if (l == 0) {
-                if (listener != null) {
-                    listener.onInitialized(plugin);
+                if (initializeListener != null) {
+                    initializeListener.onInitialized(plugin);
+                }
+                for (OnMeetingStatusChangedListener listener : statusChangedListeners) {
+                    registerStatusChangedListener(listener);
                 }
             } else {
-                if (listener != null) {
-                    listener.onError();
+                if (initializeListener != null) {
+                    initializeListener.onError();
                 }
             }
         }
@@ -533,5 +581,33 @@ public class YsxSdkPlugin extends KhAbsSdk {
         public void onYsxIdentityExpired() {
 
         }
+
+        private void registerStatusChangedListener(final OnMeetingStatusChangedListener listener) {
+            YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
+            service.addListener(new YSXMeetingServiceListener() {
+                @Override
+                public void onMeetingStatusChanged(YSXMeetingStatus ysxMeetingStatus, int i, int i1) {
+                    listener.onMeetingStatusChanged(adaptMeetingStatus(ysxMeetingStatus), i);
+                }
+            });
+        }
+    }
+
+    private static KhMeetingStatus adaptMeetingStatus(YSXMeetingStatus status) {
+        return convertEnum(status, KhMeetingStatus.class);
+    }
+
+    static <EnumFrom, EnumTo> EnumTo convertEnum(EnumFrom from, Class<EnumTo> to) {
+        EnumTo rReturn = null;
+        if (to.isEnum()) {
+            EnumTo[] array = to.getEnumConstants();
+            for (EnumTo enu : array) {
+                if (enu.toString().equals(from.toString())) {
+                    rReturn = enu;
+                    break;
+                }
+            }
+        }
+        return rReturn;
     }
 }

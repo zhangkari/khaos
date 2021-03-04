@@ -14,10 +14,12 @@ versions.support = "30.0.0"
 
 def support = [:]
 support.appcompat = "androidx.appcompat:appcompat:1.2.0"
+support.cardView = 'androidx.cardview:cardview:1.0.0'
 support.constraitLayout = 'androidx.constraintlayout:constraintlayout:2.0.4'
+support.recyclerView = 'androidx.recyclerview:recyclerview:1.0.0'
 
 def libs = [:]
-libs.eventBus = "org.greenrobot:eventbus:3.1.1"
+libs.eventBus = "org.greenrobot:eventbus:3.2.0"
 libs.json = 'com.google.code.gson:gson:2.8.5'
 
 def test = [:]

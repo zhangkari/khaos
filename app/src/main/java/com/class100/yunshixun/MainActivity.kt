@@ -1,6 +1,8 @@
 package com.class100.yunshixun
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -8,9 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.class100.atropos.generic.AtLog
 import com.class100.atropos.generic.AtTexts
-import com.class100.khaos.KhAbsSdk
-import com.class100.khaos.KhSdkListener
-import com.class100.khaos.KhSdkManager
+import com.class100.khaos.*
 import com.class100.khaos.req.KhReqCreateScheduled
 import com.class100.khaos.req.KhReqGetMeetings
 import com.class100.khaos.req.KhReqJoinMeeting
@@ -23,6 +23,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
+    }
+
+    private val meetingStatusListener = lazy {
+        KhSdkAbility.OnMeetingStatusChangedListener { status, error ->
+            Log.d(TAG, "meeting status changed:" + status.value() + "," + error);
+            if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_CONNECTING) {
+                showMeetingUi()
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,17 +137,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         KhSdkManager.registerYsxSdk(mobile)
-        KhSdkManager.getInstance().load(object : KhAbsSdk.OnSdkInitializeListener {
+        KhSdkManager.getInstance().load(object : KhSdkAbility.OnSdkInitializeListener {
             override fun onInitialized(sdk: KhAbsSdk) {
                 AtLog.d(TAG, "initSDK ok", "++++++")
                 progressBar.visibility = View.GONE
                 findViewById<View>(R.id.layout_sign_in).visibility = View.GONE
                 findViewById<View>(R.id.layout_signed_in).visibility = View.VISIBLE
+
+                KhSdkManager.getInstance().sdk.addMeetingListener(meetingStatusListener.value)
             }
 
             override fun onError() {
                 AtLog.d(TAG, "initSDK error", "++++++");
             }
         })
+    }
+
+    private fun showMeetingUi() {
+        val intent = Intent(this, KhMeetingActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+        this.startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        KhSdkManager.getInstance().sdk.removeMeetingListener(meetingStatusListener.value)
+        super.onDestroy()
     }
 }

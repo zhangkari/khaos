@@ -5,6 +5,7 @@ apply plugin: 'com.novoda.bintray-release'
 def build = depends.build
 def support = depends.support
 def test = depends.test
+def libs = depends.libs
 
 def version_code = depends.artifact.VCode
 def version_name = depends.artifact.VName
@@ -55,9 +56,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation libs.eventBus
     implementation support.appcompat
     implementation support.constraitLayout
-    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation support.cardView
+    implementation support.recyclerView
+
     api "com.class100.atropos:atropos:0.0.6"
     api("com.class100.hades:hades:0.0.6") {
         exclude group: "org.conscrypt"
