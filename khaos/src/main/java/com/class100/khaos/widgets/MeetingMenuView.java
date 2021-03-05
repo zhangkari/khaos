@@ -7,6 +7,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.class100.khaos.R;
+
 public class MeetingMenuView extends FrameLayout {
     public MeetingMenuView(@NonNull Context context) {
         this(context, null);
@@ -22,6 +24,6 @@ public class MeetingMenuView extends FrameLayout {
     }
 
     private void init() {
-        
+        inflate(getContext(), R.layout.kh_view_meeting_menu, this);
     }
 }

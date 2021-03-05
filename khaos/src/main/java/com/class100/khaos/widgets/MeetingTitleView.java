@@ -7,6 +7,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.class100.khaos.R;
+
 public class MeetingTitleView extends FrameLayout {
     public MeetingTitleView(@NonNull Context context) {
         this(context, null);
@@ -22,6 +24,6 @@ public class MeetingTitleView extends FrameLayout {
     }
 
     private void init() {
-
+        inflate(getContext(), R.layout.kh_view_meeting_title, this);
     }
 }

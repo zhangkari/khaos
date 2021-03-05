@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         KhSdkAbility.OnMeetingStatusChangedListener { status, error ->
             Log.d(TAG, "meeting status changed:" + status.value() + "," + error);
             if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_CONNECTING) {
-                showMeetingUi()
+//                showMeetingUi()
             }
         }
     }

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="entering_meeting">进入会议中</string>
+    <string name="kh_cancel">取消</string>
+    <string name="kh_entering_meeting">进入会议中</string>
+    <string name="kh_leave_meeting">离开会议</string>
+    <string name="kh_finish_meeting">结束会议</string>
 </resources>
