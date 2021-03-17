@@ -120,8 +120,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
                     @Override
                     public void onSuccess(HaApiResponse<RespKhSdkToken> resp) {
-                        AtLog.d(TAG, "requestSdkToken", "resp code:" + resp.code + ", content code:" + resp.data.code);
-                        if (resp.code == 0 && resp.data != null && resp.data.code == 200) {
+                        if (resp != null && resp.code == 0 && resp.data != null && resp.data.code == 200) {
                             AtLog.d(TAG, "requestSdkToken", "token:" + resp.data.token);
                             listener.onSuccess(resp.data.token);
                         }
