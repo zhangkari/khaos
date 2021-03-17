@@ -71,7 +71,6 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     @Override
     public void load() {
-        customizeMeetingUI(true);
         YSXSdk sdk = YSXSdk.getInstance();
         if (sdk.isInitialized()) {
             AtLog.d(TAG, "load", "sdk is initialized");
@@ -131,6 +130,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     private void loginSdk() {
         if (YSXSdk.getInstance().isLoggedIn()) {
             AtLog.d(TAG, "loginSdk", "sdk is loggedIn");
+            customizeMeetingUI(true);
             if (initializeListener != null) {
                 initializeListener.onInitialized(this);
             }
@@ -161,6 +161,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
             public void onLoginResult(LoginResult result) {
                 AtLog.d(TAG, "loginSdkByToken", "new token:" + result.getSdktoken());
                 if (result.code == 0) {
+                    customizeMeetingUI(true);
                     String userId = YSXSdk.getInstance().getYSXuser().getUserId();
                     String userName = YSXSdk.getInstance().getYSXuser().getUserName();
                     AtLog.d(TAG, "loginSdkByToken", "userId:" + userId + ", userName:" + userName);
@@ -542,6 +543,9 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public void logout() {
         YSXSdk.getInstance().sdkLogout();
+        YSXUser user = YSXSdk.getInstance().getYSXuser();
+        user.setUserName("");
+        user.setUserId("");
     }
 
     static class SdkAuthListener implements YSXSdkAuthenticationListener {

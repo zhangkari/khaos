@@ -1,10 +1,12 @@
 package com.class100.yunshixun
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
@@ -21,6 +23,8 @@ import com.class100.khaos.ysx.YsxSdkHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private var step: Int = 0
+
     companion object {
         private const val TAG = "MainActivity"
     }
@@ -29,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         KhSdkAbility.OnMeetingStatusChangedListener { status, error ->
             Log.d(TAG, "meeting status changed:" + status.value() + "," + error);
             if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_CONNECTING) {
-//                showMeetingUi()
+                showMeetingUi()
             }
         }
     }
@@ -48,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         setListener()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setListener() {
         findViewById<SwitchCompat>(R.id.check_scheduled_meeting).setOnCheckedChangeListener { _, checked ->
             findViewById<View>(R.id.layout_user).visibility =
@@ -57,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_sign_in).setOnClickListener {
             findViewById<View>(R.id.progressBar).visibility = View.VISIBLE
             initKhAbilitySdk()
+            step = 1
         }
 
         findViewById<View>(R.id.btn_start_meeting).setOnClickListener {
@@ -127,6 +133,16 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
         }
+
+        findViewById<View>(R.id.btn_profile).setOnClickListener {
+            val tvProfile = findViewById<TextView>(R.id.tv_profile)
+            val profile = KhSdkManager.getInstance().sdk?.userProfile
+            tvProfile.text = "name: ${profile?.name}, id:  ${profile?.userId}"
+        }
+
+        findViewById<View>(R.id.btn_sign_out).setOnClickListener {
+            KhSdkManager.getInstance()?.sdk?.logout()
+        }
     }
 
     private fun initKhAbilitySdk() {
@@ -151,6 +167,16 @@ class MainActivity : AppCompatActivity() {
                 AtLog.d(TAG, "initSDK error", "++++++");
             }
         })
+    }
+
+    override fun onBackPressed() {
+        if (step == 1) {
+            findViewById<View>(R.id.layout_sign_in).visibility = View.VISIBLE
+            findViewById<View>(R.id.layout_signed_in).visibility = View.GONE
+            step = 0
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun showMeetingUi() {
