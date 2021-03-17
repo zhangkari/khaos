@@ -32,7 +32,7 @@ public class KhSdkManager implements AtAbility {
     @MainThread
     public static void registerSdk(String key, KhAbsSdk sdk) {
         cachedSdk.put(key, sdk);
-        if (currentSdk == null) {
+        if (currentSdk == null || currentSdk.getClass() == sdk.getClass()) {
             currentSdk = sdk;
         }
     }
