@@ -565,9 +565,14 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 if (initializeListener != null) {
                     initializeListener.onInitialized(plugin);
                 }
-                for (OnMeetingStatusChangedListener listener : statusChangedListeners) {
-                    registerStatusChangedListener(listener);
-                }
+                registerStatusChangedListener(new OnMeetingStatusChangedListener() {
+                    @Override
+                    public void onMeetingStatusChanged(KhMeetingStatus status, int errorCode) {
+                        for (OnMeetingStatusChangedListener listener : statusChangedListeners) {
+                            listener.onMeetingStatusChanged(status, errorCode);
+                        }
+                    }
+                });
             } else {
                 if (initializeListener != null) {
                     initializeListener.onError();
