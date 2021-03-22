@@ -235,8 +235,8 @@ public class YsxSdkPlugin extends KhAbsSdk {
     public void joinMeeting(Activity context, KhReqJoinMeeting config) {
         YSXSdk sdk = YSXSdk.getInstance();
         YSXJoinMeetingOptions opts = new YSXJoinMeetingOptions();
-        opts.no_audio = config.autoConnectAudio;
-        opts.no_video = config.autoConnectVideo;
+        opts.no_audio = !config.autoConnectAudio;
+        opts.no_video = !config.autoConnectVideo;
         YSXJoinMeetingParams params = new YSXJoinMeetingParams();
         params.meetingNo = config.No;
         params.password = config.password;
@@ -336,12 +336,18 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     @Override
     public String getCurrentMeetingNo() {
-        return String.valueOf(YSXSdk.getInstance().getMeetingService().getCurrentMeetingNumber());
+        String No = String.valueOf(YSXSdk.getInstance().getMeetingService().getCurrentMeetingNumber());
+        String No2 = String.valueOf(YSXSdk.getInstance().getInMeetingService().getCurrentMeetingNumber());
+        AtLog.d(TAG, "getCurrentMeetingNo()", "No = " + No + ", No2 = " + No2);
+        return No2;
     }
 
     @Override
     public String getCurrentMeetingId() {
-        return YSXSdk.getInstance().getMeetingService().getCurrentMeetingID();
+        String id = YSXSdk.getInstance().getMeetingService().getCurrentMeetingID();
+        String id2 = YSXSdk.getInstance().getInMeetingService().getCurrentMeetingID();
+        AtLog.d(TAG, "getCurrentMeetingId()", "Id = " + id + ", Id2 = " + id2);
+        return id2;
     }
 
     private KhRespCreateScheduled adaptScheduledMeetingInfo(ScheduledMeetingInfo info) {

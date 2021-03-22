@@ -1,7 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.class100.khaos">
-
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+<manifest package="com.class100.khaos">
 
 </manifest>

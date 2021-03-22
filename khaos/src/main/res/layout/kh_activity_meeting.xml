@@ -4,10 +4,10 @@
     android:layout_height="match_parent">
 
     <com.chinamobile.ysx.YSXMobileRTCVideoView
-        android:id="@+id/videoView"
+        android:id="@+id/previewVideoView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center_horizontal|top" />
 
     <com.class100.khaos.widgets.MeetingTitleView
         android:id="@+id/meetingTitle"

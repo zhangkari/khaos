@@ -1,5 +1,6 @@
 package com.class100.yunshixun
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import com.class100.atropos.env.context.permission.AtPermission
+import com.class100.atropos.env.context.permission.PermissionCallback
 import com.class100.atropos.generic.AtLog
 import com.class100.atropos.generic.AtTexts
 import com.class100.khaos.*
@@ -41,7 +44,42 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getContentLayout())
-        init()
+        checkPermission()
+    }
+
+    private fun checkPermission() {
+        AtPermission.requestPermission(
+            this,
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO),
+            object : PermissionCallback {
+                override fun onGrantedEntirely() {
+                    init()
+                }
+
+                override fun onPermissionDenied(list: List<String>) {
+                    showPermissionHint(list)
+                    AtPermission.requestPermission(
+                        this@MainActivity,
+                        list.toTypedArray(),
+                        object : PermissionCallback {
+                            override fun onGrantedEntirely() {
+                                init()
+                            }
+
+                            override fun onPermissionDenied(p0: MutableList<String>) {
+                                showPermissionHint(p0)
+                            }
+                        })
+                }
+            })
+    }
+
+    private fun showPermissionHint(permissions: List<String>) {
+        val sb = StringBuilder()
+        permissions.forEach {
+            sb.append(it).append("\n")
+        }
+        Toast.makeText(this, "请开启${sb}权限", Toast.LENGTH_SHORT).show()
     }
 
     private fun getContentLayout(): Int {
@@ -186,7 +224,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        KhSdkManager.getInstance().sdk.removeMeetingListener(meetingStatusListener.value)
+        if (KhSdkManager.getInstance().sdk != null) {
+            KhSdkManager.getInstance().sdk.removeMeetingListener(meetingStatusListener.value)
+        }
         super.onDestroy()
     }
 }

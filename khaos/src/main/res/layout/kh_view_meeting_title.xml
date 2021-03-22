@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/app_bg_meeting_title"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
@@ -20,9 +21,10 @@
         android:textSize="10sp" />
 
     <View
-        android:layout_width="1dp"
+        android:layout_width="0.5dp"
         android:layout_height="match_parent"
-        android:background="#f1f1f1" />
+        android:background="#f1f1f1"
+        android:padding="2dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,9 +41,10 @@
         android:textSize="10sp" />
 
     <View
-        android:layout_width="1dp"
+        android:layout_width="0.5dp"
         android:layout_height="match_parent"
-        android:background="#f1f1f1" />
+        android:background="#f1f1f1"
+        android:padding="2dp" />
 
     <TextView
         android:layout_width="wrap_content"

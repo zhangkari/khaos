@@ -1,6 +1,5 @@
 package com.class100.khaos;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -9,17 +8,12 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.chinamobile.ysx.YSXInMeetingService;
 import com.chinamobile.ysx.YSXMobileRTCVideoUnitAspectMode;
 import com.chinamobile.ysx.YSXMobileRTCVideoUnitRenderInfo;
 import com.chinamobile.ysx.YSXMobileRTCVideoView;
-import com.chinamobile.ysx.YSXSdk;
-import com.class100.atropos.env.context.permission.AtPermission;
-import com.class100.atropos.env.context.permission.PermissionCallback;
 import com.class100.atropos.generic.AtLog;
 import com.class100.khaos.widgets.MeetingTitleView;
 
@@ -32,21 +26,23 @@ public class KhMeetingActivity extends AppCompatActivity {
 
     private View progressView;
     private MeetingTitleView titleView;
-    private YSXMobileRTCVideoView videoView;
+    private YSXMobileRTCVideoView previewVideoView;
     private KhSdkAbility.OnMeetingStatusChangedListener meetingStatusListener;
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.kh_activity_meeting);
-        checkPermission();
+        init();
         initListener();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        videoView.onResume();
+        if (previewVideoView != null) {
+            previewVideoView.onResume();
+        }
         checkVideoRotation(this);
         onMeetingReady();
     }
@@ -60,7 +56,7 @@ public class KhMeetingActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        videoView.onPause();
+        previewVideoView.onPause();
     }
 
     private void initListener() {
@@ -69,6 +65,7 @@ public class KhMeetingActivity extends AppCompatActivity {
             public void onMeetingStatusChanged(KhSdkAbility.KhMeetingStatus status, int errorCode) {
                 Log.d(TAG, "onMeetingStatusChanged:" + status);
                 if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_INMEETING) {
+                    refreshTitle();
                     refreshUI();
                 }
             }
@@ -96,50 +93,32 @@ public class KhMeetingActivity extends AppCompatActivity {
         });
     }
 
-    private void checkPermission() {
-        AtPermission.checkPermission(this, new PermissionCallback() {
-            @Override
-            public void onGrantedEntirely() {
-                init();
-            }
-
-            @Override
-            public void onPermissionDenied(List<String> list) {
-                showPermissionHint();
-                finish();
-            }
-        }, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
-    }
-
-    private void showPermissionHint() {
-        Toast.makeText(this, "请开启相机和麦克风权限", Toast.LENGTH_SHORT).show();
-    }
-
     private void init() {
         titleView = findViewById(R.id.meetingTitle);
+        previewVideoView = findViewById(R.id.previewVideoView);
+        progressView = findViewById(R.id.layout_progress);
+    }
+
+    private void refreshTitle() {
         AtLog.d(TAG, "init", "meetingNo:" + KhSdkManager.getInstance().getSdk().getCurrentMeetingNo());
         AtLog.d(TAG, "init", "meetingId:" + KhSdkManager.getInstance().getSdk().getCurrentMeetingId());
-
         titleView.setMeetingNo(KhSdkManager.getInstance().getSdk().getCurrentMeetingNo());
-
-        videoView = findViewById(R.id.videoView);
-        progressView = findViewById(R.id.layout_progress);
     }
 
     public void onMeetingReady() {
         if (KhSdkManager.getInstance().getSdk().getMeetingStatus() == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_INMEETING) {
+            AtLog.d(TAG, "onMeetingReady", "in meeting");
             refreshUI();
         }
     }
 
     private void refreshUI() {
         progressView.setVisibility(View.GONE);
-        YSXInMeetingService service = YSXSdk.getInstance().getInMeetingService();
-        YSXMobileRTCVideoUnitRenderInfo renderInfo = new YSXMobileRTCVideoUnitRenderInfo(25, 25, 50, 50);
-        renderInfo.is_border_visible = true;
-        renderInfo.aspect_mode = YSXMobileRTCVideoUnitAspectMode.VIDEO_ASPECT_ORIGINAL;
-        videoView.setZOrderMediaOverlay(true);
-        videoView.getVideoViewManager().addAttendeeVideoUnit(service.getMyUserID(), renderInfo);
+        YSXMobileRTCVideoUnitRenderInfo previewInfo = new YSXMobileRTCVideoUnitRenderInfo(25, 25, 50, 50);
+        previewInfo.is_border_visible = true;
+        previewInfo.aspect_mode = YSXMobileRTCVideoUnitAspectMode.VIDEO_ASPECT_ORIGINAL;
+        previewVideoView.setZOrderMediaOverlay(true);
+        previewVideoView.getVideoViewManager().addPreviewVideoUnit(previewInfo);
     }
 
     @Override
