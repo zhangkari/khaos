@@ -233,6 +233,11 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     @Override
     public void joinMeeting(Activity context, KhReqJoinMeeting config) {
+        joinMeeting(context, config, null);
+    }
+
+    @Override
+    public void joinMeeting(Activity context, KhReqJoinMeeting config, final KhSdkListener<String> listener) {
         YSXSdk sdk = YSXSdk.getInstance();
         YSXJoinMeetingOptions opts = new YSXJoinMeetingOptions();
         opts.no_audio = !config.autoConnectAudio;
@@ -247,6 +252,13 @@ public class YsxSdkPlugin extends KhAbsSdk {
             @Override
             public void onCallBack(int i, String s) {
                 AtLog.d(TAG, "joinInstantMeeting", i + " , " + s);
+                if (listener != null) {
+                    if (i == KhMeetingStatus.MEETING_STATUS_INMEETING.value()) {
+                        listener.onSuccess(s);
+                    } else {
+                        listener.onError(i, s);
+                    }
+                }
             }
         });
     }

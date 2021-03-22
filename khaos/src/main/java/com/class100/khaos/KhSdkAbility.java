@@ -29,6 +29,8 @@ public interface KhSdkAbility extends AtAbility {
 
     void joinMeeting(Activity context, KhReqJoinMeeting config);
 
+    void joinMeeting(Activity context, KhReqJoinMeeting config, KhSdkListener<String> listener);
+
     void leaveMeeting();
 
     void concludeMeeting();
