@@ -3,15 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.class100.khaos.widgets.MeetingTitleView
-        android:id="@+id/meetingTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <com.chinamobile.ysx.YSXMobileRTCVideoView
         android:id="@+id/videoView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <com.class100.khaos.widgets.MeetingTitleView
+        android:id="@+id/meetingTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_videos"

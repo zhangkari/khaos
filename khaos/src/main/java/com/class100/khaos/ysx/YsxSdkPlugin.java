@@ -334,6 +334,16 @@ public class YsxSdkPlugin extends KhAbsSdk {
         );
     }
 
+    @Override
+    public String getCurrentMeetingNo() {
+        return String.valueOf(YSXSdk.getInstance().getMeetingService().getCurrentMeetingNumber());
+    }
+
+    @Override
+    public String getCurrentMeetingId() {
+        return YSXSdk.getInstance().getMeetingService().getCurrentMeetingID();
+    }
+
     private KhRespCreateScheduled adaptScheduledMeetingInfo(ScheduledMeetingInfo info) {
         KhRespCreateScheduled resp = new KhRespCreateScheduled();
         if (info.getData() != null) {

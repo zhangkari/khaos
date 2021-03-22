@@ -39,6 +39,10 @@ public interface KhSdkAbility extends AtAbility {
 
     void createScheduledMeeting(KhReqCreateScheduled config, KhSdkListener<KhRespCreateScheduled> listener);
 
+    String getCurrentMeetingNo();
+
+    String getCurrentMeetingId();
+
     void getMeetingInfo(KhReqGetMeetingInfo config, KhSdkListener<KhRespGetMeetingInfo> listener);
 
     KhMeetingStatus getMeetingStatus();

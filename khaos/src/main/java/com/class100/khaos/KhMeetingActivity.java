@@ -20,6 +20,8 @@ import com.chinamobile.ysx.YSXMobileRTCVideoView;
 import com.chinamobile.ysx.YSXSdk;
 import com.class100.atropos.env.context.permission.AtPermission;
 import com.class100.atropos.env.context.permission.PermissionCallback;
+import com.class100.atropos.generic.AtLog;
+import com.class100.khaos.widgets.MeetingTitleView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,9 +30,8 @@ import java.util.List;
 public class KhMeetingActivity extends AppCompatActivity {
     private static final String TAG = "KhMeetingActivity";
 
-    private static final int REQUEST_CAMERA_CODE = 1000;
-
     private View progressView;
+    private MeetingTitleView titleView;
     private YSXMobileRTCVideoView videoView;
     private KhSdkAbility.OnMeetingStatusChangedListener meetingStatusListener;
 
@@ -115,6 +116,12 @@ public class KhMeetingActivity extends AppCompatActivity {
     }
 
     private void init() {
+        titleView = findViewById(R.id.meetingTitle);
+        AtLog.d(TAG, "init", "meetingNo:" + KhSdkManager.getInstance().getSdk().getCurrentMeetingNo());
+        AtLog.d(TAG, "init", "meetingId:" + KhSdkManager.getInstance().getSdk().getCurrentMeetingId());
+
+        titleView.setMeetingNo(KhSdkManager.getInstance().getSdk().getCurrentMeetingNo());
+
         videoView = findViewById(R.id.videoView);
         progressView = findViewById(R.id.layout_progress);
     }

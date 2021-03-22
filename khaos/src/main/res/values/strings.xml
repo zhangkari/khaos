@@ -4,4 +4,8 @@
     <string name="kh_entering_meeting">进入会议中</string>
     <string name="kh_leave_meeting">离开会议</string>
     <string name="kh_finish_meeting">结束会议</string>
+
+    <string name="kh_host">主持人:</string>
+    <string name="kh_meeting_no">会议号:</string>
+    <string name="kh_meeting_elapsed">已开会:</string>
 </resources>

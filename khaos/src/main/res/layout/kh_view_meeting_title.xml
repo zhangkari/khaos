@@ -7,35 +7,53 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/kh_host"
+        android:textColor="#f1f1f1"
+        android:textSize="10sp" />
 
     <TextView
+        android:id="@+id/tv_host"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#f1f1f1"
+        android:textSize="10sp" />
 
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@color/zm_black" />
+        android:background="#f1f1f1" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/kh_meeting_no"
+        android:textColor="#f1f1f1"
+        android:textSize="10sp" />
 
     <TextView
+        android:id="@+id/tv_meeting_no"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#f1f1f1"
+        android:textSize="10sp" />
 
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@color/zm_black" />
+        android:background="#f1f1f1" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/kh_meeting_elapsed"
+        android:textColor="#f1f1f1"
+        android:textSize="10sp" />
 
     <TextView
+        android:id="@+id/tv_elapsed"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#f1f1f1"
+        android:textSize="10sp" />
 </LinearLayout>
