@@ -62,12 +62,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     private static final String APP_KEY = "FOwvZJf5DjpizygZahOH9hgyciQmgOsXR5eC";
     private static final String APP_SECRET = "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr";
 
-    private final String mobilePhone;
     private SdkAuthListener authListener;
-
-    public YsxSdkPlugin(String phone) {
-        mobilePhone = phone;
-    }
 
     @Override
     public void load() {
@@ -93,7 +88,6 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 loginSdk();
             }
         });
-
     }
 
     private void customizeMeetingUI(boolean customized) {
@@ -111,7 +105,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
         }
 
         HaHttpClient.getInstance()
-                .enqueue(new ReqKhSdkToken(mobilePhone), new HaApiCallback<HaApiResponse<RespKhSdkToken>>() {
+                .enqueue(new ReqKhSdkToken(), new HaApiCallback<HaApiResponse<RespKhSdkToken>>() {
                     @Override
                     public void onError(int code, String message) {
                         listener.onError(code, message);

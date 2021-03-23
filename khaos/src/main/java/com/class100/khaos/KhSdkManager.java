@@ -21,13 +21,8 @@ public class KhSdkManager implements AtAbility {
     }
 
     private static volatile KhSdkManager _instance;
-    private static KhAbsSdk currentSdk;
+    private static KhAbsSdk currentSdk = new YsxSdkPlugin();
     private static final Map<String, KhAbsSdk> cachedSdk = new HashMap<>(4);
-
-    @MainThread
-    public static void registerYsxSdk(String mobile) {
-        registerSdk(SDK_YSX, new YsxSdkPlugin(mobile));
-    }
 
     @MainThread
     public static void registerSdk(String key, KhAbsSdk sdk) {

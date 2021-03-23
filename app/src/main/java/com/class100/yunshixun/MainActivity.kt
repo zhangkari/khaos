@@ -15,6 +15,9 @@ import com.class100.atropos.env.context.permission.AtPermission
 import com.class100.atropos.env.context.permission.PermissionCallback
 import com.class100.atropos.generic.AtLog
 import com.class100.atropos.generic.AtTexts
+import com.class100.hades.http.HaApiCallback
+import com.class100.hades.http.HaApiResponse
+import com.class100.hades.http.HaHttpClient
 import com.class100.khaos.*
 import com.class100.khaos.req.KhReqCreateScheduled
 import com.class100.khaos.req.KhReqGetMeetings
@@ -23,6 +26,8 @@ import com.class100.khaos.req.KhReqStartMeeting
 import com.class100.khaos.resp.KhRespCreateScheduled
 import com.class100.khaos.resp.KhRespGetMeetings
 import com.class100.khaos.ysx.YsxSdkHelper
+import com.class100.yunshixun.req.ReqLogin
+import com.class100.yunshixun.resp.RespLogin
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -90,6 +95,34 @@ class MainActivity : AppCompatActivity() {
         setListener()
     }
 
+    private fun doLogin(phone: String?, password: String?) {
+        if (AtTexts.isEmpty(phone) || AtTexts.isEmpty(password)) {
+            findViewById<View>(R.id.progressBar).visibility = View.GONE
+            Toast.makeText(this, "请输入手机号和密码", Toast.LENGTH_SHORT).show()
+            return;
+        }
+
+        HaHttpClient.getInstance()
+            .enqueue(
+                ReqLogin(phone!!, password!!),
+                object : HaApiCallback<HaApiResponse<RespLogin>> {
+                    override fun onSuccess(p0: HaApiResponse<RespLogin>) {
+                        findViewById<View>(R.id.progressBar).visibility = View.GONE
+                        if (p0.code == 0) {
+                            KhPrefs.saveAppToken(p0.data.token.token)
+                            initKhAbilitySdk()
+                        } else {
+                            Toast.makeText(this@MainActivity, p0.msg, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onError(p0: Int, p1: String) {
+                        findViewById<View>(R.id.progressBar).visibility = View.GONE
+                        Toast.makeText(this@MainActivity, p1, Toast.LENGTH_SHORT).show()
+                    }
+                })
+    }
+
     @SuppressLint("SetTextI18n")
     private fun setListener() {
         findViewById<SwitchCompat>(R.id.check_scheduled_meeting).setOnCheckedChangeListener { _, checked ->
@@ -99,8 +132,9 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_sign_in).setOnClickListener {
             findViewById<View>(R.id.progressBar).visibility = View.VISIBLE
-            initKhAbilitySdk()
-            step = 1
+            val phone = findViewById<EditText>(R.id.et_mobile_phone).text.toString()
+            val password = findViewById<EditText>(R.id.et_password).text.toString()
+            doLogin(phone, password)
         }
 
         findViewById<View>(R.id.btn_start_meeting).setOnClickListener {
@@ -184,15 +218,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initKhAbilitySdk() {
-        val mobile: String = findViewById<EditText>(R.id.et_mobile_phone).text.toString()
-        if (AtTexts.isEmpty(mobile)) {
-            Toast.makeText(this, "Please input mobile phone", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        KhSdkManager.registerYsxSdk(mobile)
         KhSdkManager.getInstance().load(object : KhSdkAbility.OnSdkInitializeListener {
             override fun onInitialized(sdk: KhAbsSdk) {
+                step = 1
                 AtLog.d(TAG, "initSDK ok", "++++++")
                 progressBar.visibility = View.GONE
                 findViewById<View>(R.id.layout_sign_in).visibility = View.GONE
