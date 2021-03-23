@@ -509,6 +509,9 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public KhUserProfile getUserProfile() {
         YSXUser user = YSXSdk.getInstance().getYSXuser();
+        if (user == null) {
+            return null;
+        }
         return new KhUserProfile(user.getUserId(), user.getUserName());
     }
 
