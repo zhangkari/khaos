@@ -8,11 +8,19 @@
     <CheckBox
         android:id="@+id/btn_expand"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:button="@null"
+        android:drawableTop="@drawable/kh_bg_meeting_menu_btn"
+        android:includeFontPadding="false"
+        android:padding="6dp"
+        android:text="@string/kh_expand"
+        android:textColor="#f1f1f1"
+        android:textSize="8sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_menus"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="6dp" />
 
 </LinearLayout>

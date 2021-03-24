@@ -8,4 +8,13 @@
     <string name="kh_host">主持人:</string>
     <string name="kh_meeting_no">会议号:</string>
     <string name="kh_meeting_elapsed">已开会:</string>
+
+
+    <string name="kh_expand">展开</string>
+    <string name="kh_shrink">收起</string>
+    <string name="kh_microphone">麦克风</string>
+    <string name="kh_camera">摄像头</string>
+    <string name="kh_chat">聊天</string>
+    <string name="kh_attender">参会人</string>
+    <string name="kh_placement">布局</string>
 </resources>

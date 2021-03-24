@@ -19,6 +19,8 @@ import com.class100.khaos.meeting.KhMeetingContract;
 import com.class100.khaos.meeting.KhMeetingModel;
 import com.class100.khaos.meeting.KhMeetingPresenter;
 import com.class100.khaos.meeting.vb.MeetingUserBinder;
+import com.class100.khaos.meeting.vm.MeetingMenuItem;
+import com.class100.khaos.widgets.MeetingMenuView;
 import com.class100.khaos.widgets.MeetingTitleView;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +32,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
     private static final String TAG = "KhMeetingActivity";
 
     private View progressView;
+    private MeetingMenuView menuView;
     private MeetingTitleView titleView;
     private SmartAdapter smartAdapter;
     private GridLayoutManager layoutManager;
@@ -47,6 +50,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         presenter = new KhMeetingPresenter(this, new KhMeetingModel());
         initView();
         initListener();
+        presenter.loadMeetingMenu();
         presenter.requestAttenders();
     }
 
@@ -54,6 +58,8 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         titleView = findViewById(R.id.meetingTitle);
         RecyclerView recyclerView = findViewById(R.id.rv_users);
         progressView = findViewById(R.id.layout_progress);
+
+        menuView = findViewById(R.id.meeting_menu);
 
         smartAdapter = new SmartAdapter();
         smartAdapter.register(KhMeetingContract.MeetingUser.class, new MeetingUserBinder());
@@ -140,6 +146,17 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
     }
 
     @Override
+    public void showMenu(List<MeetingMenuItem> menus) {
+        menuView.setMenuItem(menus);
+        menuView.setOnMenuItemClickListener(new MeetingMenuView.OnMenuItemClickListener() {
+            @Override
+            public void onItemClick(MeetingMenuItem item) {
+                presenter.performMenuClick(item.id);
+            }
+        });
+    }
+
+    @Override
     public void showAttenders(List<KhMeetingContract.MeetingUser> users) {
         AtLog.d(TAG, "showAttenders", "users:" + users.size());
         int size = users.size();
@@ -150,5 +167,20 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             layoutManager.setSpanCount(size);
         }
         smartAdapter.refreshData(users, false);
+    }
+
+    @Override
+    public void showLeaveDialog() {
+        new LeaveMeetingDialog().setOnDecideListener(new LeaveMeetingDialog.OnDecideListener() {
+            @Override
+            public void onLeave() {
+                presenter.executeControlMeeting(KhMeetingContract.cmd_leave_meeting);
+            }
+
+            @Override
+            public void onFinish() {
+                presenter.executeControlMeeting(KhMeetingContract.cmd_finish_meeting);
+            }
+        }).show(getSupportFragmentManager(), TAG);
     }
 }

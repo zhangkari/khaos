@@ -23,7 +23,9 @@
     <com.class100.khaos.widgets.MeetingMenuView
         android:id="@+id/meeting_menu"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:background="@drawable/kh_bg_meeting_menu" />
 
     <LinearLayout
         android:id="@+id/layout_progress"
