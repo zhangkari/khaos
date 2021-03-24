@@ -16,10 +16,9 @@
         android:layout_gravity="start|top" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_videos"
+        android:id="@+id/rv_users"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:layout_height="match_parent" />
 
     <com.class100.khaos.widgets.MeetingMenuView
         android:id="@+id/meeting_menu"
@@ -32,7 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ProgressBar
             android:layout_width="wrap_content"

@@ -118,6 +118,7 @@ def vsn(artifact) {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation libs.eventBus
+    implementation libs.smartAdapter
     implementation support.appcompat
     implementation support.constraitLayout
     implementation support.cardView

@@ -8,55 +8,66 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.chinamobile.ysx.YSXMobileRTCVideoUnitAspectMode;
-import com.chinamobile.ysx.YSXMobileRTCVideoUnitRenderInfo;
-import com.chinamobile.ysx.YSXMobileRTCVideoView;
 import com.class100.atropos.generic.AtLog;
+import com.class100.khaos.meeting.KhMeetingContract;
+import com.class100.khaos.meeting.KhMeetingModel;
+import com.class100.khaos.meeting.KhMeetingPresenter;
+import com.class100.khaos.meeting.vb.MeetingUserBinder;
 import com.class100.khaos.widgets.MeetingTitleView;
 
 import org.jetbrains.annotations.NotNull;
+import org.karic.smartadapter.SmartAdapter;
 
 import java.util.List;
 
-public class KhMeetingActivity extends AppCompatActivity {
+public class KhMeetingActivity extends AppCompatActivity implements KhMeetingContract.IMeetingView {
     private static final String TAG = "KhMeetingActivity";
 
     private View progressView;
     private MeetingTitleView titleView;
-    private YSXMobileRTCVideoView previewVideoView;
+    private SmartAdapter smartAdapter;
+    private GridLayoutManager layoutManager;
     private KhSdkAbility.OnMeetingStatusChangedListener meetingStatusListener;
+    private KhMeetingContract.IMeetingPresenter presenter;
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.kh_activity_meeting);
         init();
-        initListener();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (previewVideoView != null) {
-            previewVideoView.onResume();
-        }
+    private void init() {
+        presenter = new KhMeetingPresenter(this, new KhMeetingModel());
+        initView();
+        initListener();
+        presenter.requestAttenders();
+    }
+
+    private void initView() {
+        titleView = findViewById(R.id.meetingTitle);
+        RecyclerView recyclerView = findViewById(R.id.rv_users);
+        progressView = findViewById(R.id.layout_progress);
+
+        smartAdapter = new SmartAdapter();
+        smartAdapter.register(KhMeetingContract.MeetingUser.class, new MeetingUserBinder());
+        layoutManager = new GridLayoutManager(this, 3);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(smartAdapter);
+
         checkVideoRotation(this);
-        onMeetingReady();
     }
 
     @Override
     public void onConfigurationChanged(@NotNull Configuration configuration) {
         super.onConfigurationChanged(configuration);
         checkVideoRotation(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        previewVideoView.onPause();
     }
 
     private void initListener() {
@@ -66,7 +77,6 @@ public class KhMeetingActivity extends AppCompatActivity {
                 Log.d(TAG, "onMeetingStatusChanged:" + status);
                 if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_INMEETING) {
                     refreshTitle();
-                    refreshUI();
                 }
             }
         };
@@ -76,12 +86,13 @@ public class KhMeetingActivity extends AppCompatActivity {
             @Override
             public void onMeetingUserJoin(List<String> list) {
                 Log.d(TAG, "onMeetingUserJoin: count = " + list.size());
-                onMeetingReady();
+                presenter.notifyUserJoin(list);
             }
 
             @Override
             public void onMeetingUserLeave(List<String> list) {
                 Log.d(TAG, "onMeetingUserLeave: count = " + list.size());
+                presenter.notifyUserLeave(list);
             }
         });
 
@@ -93,37 +104,17 @@ public class KhMeetingActivity extends AppCompatActivity {
         });
     }
 
-    private void init() {
-        titleView = findViewById(R.id.meetingTitle);
-        previewVideoView = findViewById(R.id.previewVideoView);
-        progressView = findViewById(R.id.layout_progress);
-    }
-
     private void refreshTitle() {
         AtLog.d(TAG, "init", "meetingNo:" + KhSdkManager.getInstance().getSdk().getCurrentMeetingNo());
         AtLog.d(TAG, "init", "meetingId:" + KhSdkManager.getInstance().getSdk().getCurrentMeetingId());
         titleView.setMeetingNo(KhSdkManager.getInstance().getSdk().getCurrentMeetingNo());
     }
 
-    public void onMeetingReady() {
-        if (KhSdkManager.getInstance().getSdk().getMeetingStatus() == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_INMEETING) {
-            AtLog.d(TAG, "onMeetingReady", "in meeting");
-            refreshUI();
-        }
-    }
-
-    private void refreshUI() {
-        progressView.setVisibility(View.GONE);
-        YSXMobileRTCVideoUnitRenderInfo previewInfo = new YSXMobileRTCVideoUnitRenderInfo(25, 25, 50, 50);
-        previewInfo.is_border_visible = true;
-        previewInfo.aspect_mode = YSXMobileRTCVideoUnitAspectMode.VIDEO_ASPECT_ORIGINAL;
-        previewVideoView.setZOrderMediaOverlay(true);
-        previewVideoView.getVideoViewManager().addPreviewVideoUnit(previewInfo);
-    }
-
     @Override
     public void onDestroy() {
+        KhSdkManager.getInstance().getSdk().leaveMeeting();
         KhSdkManager.getInstance().getSdk().removeMeetingListener(meetingStatusListener);
+        presenter.detach();
         super.onDestroy();
     }
 
@@ -131,5 +122,33 @@ public class KhMeetingActivity extends AppCompatActivity {
         Display display = ((WindowManager) context.getSystemService(Service.WINDOW_SERVICE)).getDefaultDisplay();
         int rotation = display.getRotation();
         KhSdkManager.getInstance().getSdk().rotateLocalVideo(rotation);
+    }
+
+    @Override
+    public void showLoading() {
+        progressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        progressView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError(int code, String message) {
+        Toast.makeText(this, code + "\n" + message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showAttenders(List<KhMeetingContract.MeetingUser> users) {
+        AtLog.d(TAG, "showAttenders", "users:" + users.size());
+        int size = users.size();
+        if (size < 1) {
+            size = 1;
+        }
+        if (size < 3) {
+            layoutManager.setSpanCount(size);
+        }
+        smartAdapter.refreshData(users, false);
     }
 }

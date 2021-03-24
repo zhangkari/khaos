@@ -516,6 +516,19 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     @Override
+    public List<String> getMeetingUsers() {
+        List<Long> users = YSXSdk.getInstance().getInMeetingService().getInMeetingUserList();
+        if (AtCollections.isEmpty(users)) {
+            return new ArrayList<>(0);
+        }
+        List<String> data = new ArrayList<>(users.size());
+        for (Long id : users) {
+            data.add(String.valueOf(id));
+        }
+        return data;
+    }
+
+    @Override
     public void rotateLocalVideo(int degree) {
         YSXSdk.getInstance()
                 .getInMeetingService()

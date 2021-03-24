@@ -21,6 +21,7 @@ support.recyclerView = 'androidx.recyclerview:recyclerview:1.0.0'
 def libs = [:]
 libs.eventBus = "org.greenrobot:eventbus:3.2.0"
 libs.json = 'com.google.code.gson:gson:2.8.5'
+libs.smartAdapter = 'com.tomtom.widget.smartadapter:smartadapter:1.0.6'
 
 def test = [:]
 test.junit = "junit:junit:4.12"

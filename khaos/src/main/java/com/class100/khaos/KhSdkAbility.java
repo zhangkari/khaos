@@ -57,6 +57,8 @@ public interface KhSdkAbility extends AtAbility {
 
     KhUserProfile getUserProfile();
 
+    List<String> getMeetingUsers();
+
     void rotateLocalVideo(int degree);
 
     void setMeetingUserChangedListener(OnMeetingUserChangedListener listener);
