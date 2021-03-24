@@ -83,9 +83,15 @@ public class MeetingMenuView extends FrameLayout {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                refreshCheckBoxText(isChecked);
                 animateMenuPanel(isChecked);
             }
         });
+        checkBox.setChecked(true);
+    }
+
+    private void refreshCheckBoxText(boolean isChecked) {
+        checkBox.setText(isChecked ? R.string.kh_shrink : R.string.kh_expand);
     }
 
     private void animateMenuPanel(boolean show) {
