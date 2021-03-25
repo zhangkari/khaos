@@ -307,6 +307,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
         });
     }
 
+    // todo
     @Override
     public void createScheduledMeeting(KhReqCreateScheduled config, final KhSdkListener<KhRespCreateScheduled> listener) {
         YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
@@ -317,7 +318,8 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 String.valueOf(config.duration),
                 YsxSdkHelper.formatTime(config.startTime),
                 YsxSdkHelper.formatTime(config.startTime - 8 * 60 * 60 * 1000),
-                config.token,
+//                config.token,
+                YSXSdk.getInstance().getYSXuser().getToken(),
                 new ResponseListenerCommon<ScheduledMeetingInfo>() {
                     @Override
                     public void onFailure(Result result) {
