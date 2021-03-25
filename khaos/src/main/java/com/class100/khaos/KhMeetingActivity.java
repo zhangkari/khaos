@@ -1,13 +1,11 @@
 package com.class100.khaos;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -125,7 +123,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
     }
 
     private void checkVideoRotation(Context context) {
-        Display display = ((WindowManager) context.getSystemService(Service.WINDOW_SERVICE)).getDefaultDisplay();
+        Display display = context.getDisplay();
         int rotation = display.getRotation();
         KhSdkManager.getInstance().getSdk().rotateLocalVideo(rotation);
     }
