@@ -3,6 +3,8 @@ package com.class100.khaos.ysx;
 import android.app.Activity;
 
 import com.chinamobile.ysx.YSXError;
+import com.chinamobile.ysx.YSXIMAction;
+import com.chinamobile.ysx.YSXImConfig;
 import com.chinamobile.ysx.YSXInstantMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingParams;
@@ -22,6 +24,10 @@ import com.chinamobile.ysx.auther.bean.YSXUser;
 import com.chinamobile.ysx.bean.Result;
 import com.chinamobile.ysx.bean.ScheduledMeetingInfo;
 import com.chinamobile.ysx.bean.YSXMeetingList;
+import com.chinamobile.ysx.iminterface.IMOflineLinePushConfig;
+import com.chinamobile.ysx.iminterface.ImConnectionListener;
+import com.chinamobile.ysx.iminterface.ImMessageListener;
+import com.chinamobile.ysx.iminterface.InviteMeeting;
 import com.chinamobile.ysx.responselistener.ResponseListenerCommon;
 import com.class100.atropos.generic.AtCollections;
 import com.class100.atropos.generic.AtLog;
@@ -73,6 +79,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
             return;
         }
 
+        initializeIMSdk(sdk, APP_KEY, APP_SECRET);
         sdk.initSDK(env._app, env._app, APP_KEY, APP_SECRET, true, new YSXSdkInitializeListener() {
             @Override
             public void onYSXSdkInitializeResult(int errorCode, int internalErrorCode) {
@@ -88,6 +95,99 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 loginSdk();
             }
         });
+    }
+
+    private void initializeIMSdk(YSXSdk sdk, String appKey, String appSecret) {
+        IMOflineLinePushConfig imOflineLinePushConfig = new IMOflineLinePushConfig();
+        imOflineLinePushConfig.setMI_PUSH_APP_KEY(appSecret);
+        imOflineLinePushConfig.setMI_PUSH_APPID(appKey);
+        YSXImConfig.Builder builder = new YSXImConfig.Builder();
+        builder.setImConnectionListener(new ImConnectionListener() {
+            @Override
+            public void onConnected() {
+                AtLog.d(TAG, "initializeIMSdk", "onConnected");
+            }
+
+            @Override
+            public void onDisconnected(int i) {
+                AtLog.d(TAG, "initializeIMSdk", "onDisconnected");
+                YSXSdk sdk12 = YSXSdk.getInstance();
+                YSXMeetingService meetingService = sdk12.getMeetingService();
+                meetingService.leaveCurrentMeeting(false);
+            }
+        }).setImMessageListener(new ImMessageListener() {
+            @Override
+            public void onMeassageReceived(InviteMeeting inviteMeeting) {
+                AtLog.d(TAG, "onMessageReceived", "action:" + inviteMeeting.getAction() + ", meetingNo:" + inviteMeeting.getMeetingNo());
+
+                int action = inviteMeeting.getAction();
+//                * action == 0 加入会议
+//                 *action == 1 启动会议
+//                 *action == 2 刷新列表
+//                 *
+                switch (action) {
+                    case YSXIMAction.ACTION_JOINMEETING:
+                    /*
+                    mHandler.post(() -> {
+                        Toast.makeText(getApplicationContext(), "收到会议提醒，请加入会议", Toast.LENGTH_SHORT).show();
+                        Intent intent1 = new Intent(LoginActivity.this, IncomingCallActivity.class);
+                        intent1.putExtra("inviteMeeting", inviteMeeting);
+                        startActivity(intent1);
+                    });
+                    */
+                        break;
+                    case YSXIMAction.ACTION_STARTMEETING:
+                    /*
+                    mHandler.post(() -> {
+                        Toast.makeText(getApplicationContext(), "收到预约会议提醒，请加入会议", Toast.LENGTH_SHORT).show();
+                        mEdtMeetingNo.setText(String.valueOf(inviteMeeting.getMeetingNo()));
+                        edtMeetingId.setText(inviteMeeting.getMeetingId());
+                        edtMeetingType.setText(String.valueOf(inviteMeeting.getMeetingType()));
+                        edtMeetingTopic.setText(inviteMeeting.getTopic());
+                        Intent intent1 = new Intent(LoginActivity.this, IncomingCallActivity.class);
+                        intent1.putExtra("inviteMeeting", inviteMeeting);
+                        startActivity(intent1);
+                    });
+                    */
+                        break;
+                    case YSXIMAction.ACTION_REFRESH_MEETINGLIST://刷新会议列表
+                        break;
+
+                    case YSXIMAction.ACTION_LEAVEMEETING:
+                        //退出会议
+//                  Toast.makeText(getApplicationContext(),"会议结束",Toast.LENGTH_LONG).show();
+                        if (inviteMeeting.getMeetingType() == 1) {
+                            YSXSdk sdk1 = YSXSdk.getInstance();
+                            YSXMeetingService meetingService = sdk1.getMeetingService();
+                            meetingService.leaveCurrentMeeting(true);
+                        }
+                        break;
+                    case YSXIMAction.ACTION_MUTE:
+                        //会议静音
+                    /*
+                    LoginActivity.this.runOnUiThread(() -> {
+                        YSXInMeetingService inMeetingService = YSXSdk.getInstance().getInMeetingService();
+                        YSXInMeetingAudioController ysxInMeetingVideoController = inMeetingService.getInMeetingAudioController();
+                        ysxInMeetingVideoController.muteMyAudio(true);
+                    });
+                     */
+                        break;
+                    case YSXIMAction.ACTION_UNMUTE:
+                        //解除静音
+                        // LoginActivity.this.runOnUiThread(() -> YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().muteMyAudio(false));
+
+                        break;
+                    //收到邀请应答
+                    case YSXIMAction.ACTION_INVITEANSWER_CALLBACK:
+                        if (inviteMeeting.getAnswerCode() == 0) {
+
+                        }
+                        break;
+                }
+            }
+        }).setIMOflineLinePushConfig(imOflineLinePushConfig);
+        YSXImConfig ysxImConfig = builder.create();
+        sdk.setYSXImConfig(ysxImConfig);
     }
 
     private void customizeMeetingUI(boolean customized) {

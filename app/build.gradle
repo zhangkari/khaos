@@ -45,5 +45,4 @@ dependencies {
     testImplementation test.junit
     androidTestImplementation test.andJunit
     androidTestImplementation test.espresso
-
 }
