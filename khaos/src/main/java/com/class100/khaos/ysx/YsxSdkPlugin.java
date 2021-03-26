@@ -86,7 +86,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
             loginSdk();
             return;
         }
-        if (useIMSdk){
+        if (useIMSdk) {
             initializeIMSdk(sdk, APP_KEY, APP_SECRET);
         }
         sdk.initSDK(env._app, env._app, APP_KEY, APP_SECRET, true, new YSXSdkInitializeListener() {
@@ -128,7 +128,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
             @Override
             public void onMeassageReceived(InviteMeeting inviteMeeting) {
                 AtLog.d(TAG, "onMessageReceived", "action:" + inviteMeeting.getAction() + ", meetingNo:" + inviteMeeting.getMeetingNo());
-                if (imMessageListener!=null){
+                if (imMessageListener != null) {
                     imMessageListener.onMessageReceived(YsxSdkHelper.getKhIMMessageFromInviteMeeting(inviteMeeting));
                 }
 //                int action = inviteMeeting.getAction();

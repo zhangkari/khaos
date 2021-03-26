@@ -23,7 +23,7 @@ public abstract class KhAbsSdk extends AtContextAbility implements KhSdkAbility 
         this.imMessageListener = listener;
     }
 
-    public void useIMSDk(boolean isUse){
+    public void useIMSDk(boolean isUse) {
         this.useIMSdk = isUse;
     }
 
