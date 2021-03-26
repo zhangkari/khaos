@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="afterDescendants"
+    android:focusable="true">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_users"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true" />
 
     <com.class100.khaos.widgets.MeetingTitleView
         android:id="@+id/meetingTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|top"
-        android:layout_margin="20dp" />
+        android:layout_margin="20dp"
+        android:focusable="false" />
 
     <com.class100.khaos.widgets.MeetingMenuView
         android:id="@+id/meeting_menu"
@@ -21,13 +26,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="20dp"
-        android:background="@drawable/kh_bg_meeting_menu" />
+        android:background="@drawable/kh_bg_meeting_menu"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true" />
 
     <LinearLayout
         android:id="@+id/layout_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:focusable="false"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">

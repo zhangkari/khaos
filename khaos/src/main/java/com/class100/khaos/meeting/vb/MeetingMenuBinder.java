@@ -14,6 +14,7 @@ public class MeetingMenuBinder extends ViewBinder<MeetingMenuItem> {
 
     @Override
     protected void bindData(MeetingMenuItem data) {
+        view.setFocusable(true);
         TextView tv = find(R.id.tv_item);
         tv.setText(data.name);
         tv.setCompoundDrawablesWithIntrinsicBounds(0, data.icon, 0, 0);

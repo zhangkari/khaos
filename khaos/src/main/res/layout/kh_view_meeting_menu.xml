@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="afterDescendants"
+    android:focusable="true"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
@@ -11,6 +13,7 @@
         android:layout_height="wrap_content"
         android:button="@null"
         android:drawableTop="@drawable/kh_bg_meeting_menu_btn"
+        android:focusable="true"
         android:includeFontPadding="false"
         android:padding="6dp"
         android:text="@string/kh_expand"
@@ -21,6 +24,8 @@
         android:id="@+id/rv_menus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
         android:padding="6dp" />
 
 </LinearLayout>

@@ -9,13 +9,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.class100.atropos.generic.AtLog;
 import com.class100.khaos.meeting.KhMeetingContract;
 import com.class100.khaos.meeting.KhMeetingModel;
 import com.class100.khaos.meeting.KhMeetingPresenter;
+import com.class100.khaos.meeting.MeetingLayoutManager;
 import com.class100.khaos.meeting.vb.MeetingUserBinder;
 import com.class100.khaos.meeting.vm.MeetingMenuItem;
 import com.class100.khaos.widgets.MeetingMenuView;
@@ -33,7 +33,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
     private MeetingMenuView menuView;
     private MeetingTitleView titleView;
     private SmartAdapter smartAdapter;
-    private GridLayoutManager layoutManager;
+    private MeetingLayoutManager layoutManager;
     private KhSdkAbility.OnMeetingStatusChangedListener meetingStatusListener;
     private KhMeetingContract.IMeetingPresenter presenter;
 
@@ -61,7 +61,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
 
         smartAdapter = new SmartAdapter();
         smartAdapter.register(KhMeetingContract.MeetingUser.class, new MeetingUserBinder());
-        layoutManager = new GridLayoutManager(this, 3);
+        layoutManager = new MeetingLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(smartAdapter);
 
@@ -157,15 +157,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
     @Override
     public void showAttenders(List<KhMeetingContract.MeetingUser> users) {
         AtLog.d(TAG, "showAttenders", "users:" + users.size());
-        int size = users.size();
-        if (size < 1) {
-            size = 1;
-        }
-        if (size < 3) {
-            layoutManager.setSpanCount(size);
-        } else {
-            layoutManager.setSpanCount(3);
-        }
+        layoutManager.setItemCount(users.size());
         smartAdapter.refreshData(users, false);
     }
 
