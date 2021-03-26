@@ -173,11 +173,13 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             @Override
             public void onLeave() {
                 presenter.executeControlMeeting(KhMeetingContract.cmd_leave_meeting);
+                finish();
             }
 
             @Override
             public void onFinish() {
                 presenter.executeControlMeeting(KhMeetingContract.cmd_finish_meeting);
+                finish();
             }
         }).show(getSupportFragmentManager(), TAG);
     }

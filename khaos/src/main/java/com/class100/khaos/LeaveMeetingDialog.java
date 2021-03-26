@@ -42,7 +42,7 @@ public class LeaveMeetingDialog extends DialogFragment {
         if (view == null) {
             return;
         }
-        view.findViewById(R.id.btn_leave).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.leave_meeting).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
@@ -52,7 +52,7 @@ public class LeaveMeetingDialog extends DialogFragment {
             }
         });
 
-        view.findViewById(R.id.btn_finish).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.finish_meeting).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
