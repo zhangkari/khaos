@@ -6,13 +6,13 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/leave_meeting"
+        android:id="@+id/btn_leave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/kh_leave_meeting" />
 
     <Button
-        android:id="@+id/finish_meeting"
+        android:id="@+id/btn_finish"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/kh_finish_meeting" />
