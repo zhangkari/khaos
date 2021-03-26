@@ -158,4 +158,28 @@ public class KhIMMessage implements Serializable {
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
+
+
+    @Override
+    public String toString() {
+        return "KhIMMessage{" +
+                "disableAudio=" + disableAudio +
+                ", disableVideo=" + disableVideo +
+                ", isMeetingEnd=" + isMeetingEnd +
+                ", ownerId='" + ownerId + '\'' +
+                ", utcSendTime='" + utcSendTime + '\'' +
+                ", meetingNo=" + meetingNo +
+                ", meetingId='" + meetingId + '\'' +
+                ", action=" + action +
+                ", topic='" + topic + '\'' +
+                ", id='" + id + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", meetingType=" + meetingType +
+                ", sendTime='" + sendTime + '\'' +
+                ", userName='" + userName + '\'' +
+                ", headPath='" + headPath + '\'' +
+                ", answerCode=" + answerCode +
+                ", mobile='" + mobile + '\'' +
+                '}';
+    }
 }

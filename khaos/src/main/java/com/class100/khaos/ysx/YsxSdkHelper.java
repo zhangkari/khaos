@@ -103,6 +103,6 @@ public final class YsxSdkHelper {
         khIMMessage.setHeadPath(inviteMeeting.getHeadPath());
         khIMMessage.setAnswerCode(inviteMeeting.getAnswerCode());
         khIMMessage.setMobile(inviteMeeting.getMobile());
-        return null;
+        return khIMMessage;
     }
 }
