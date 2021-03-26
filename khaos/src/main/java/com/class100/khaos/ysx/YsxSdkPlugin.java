@@ -76,6 +76,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     private static final String APP_SECRET = "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr";
 
     private SdkAuthListener authListener;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void load() {
@@ -128,7 +129,12 @@ public class YsxSdkPlugin extends KhAbsSdk {
             public void onMeassageReceived(InviteMeeting inviteMeeting) {
                 AtLog.d(TAG, "onMessageReceived", "action:" + inviteMeeting.getAction() + ", meetingNo:" + inviteMeeting.getMeetingNo());
                 if (imMessageListener != null) {
-                    imMessageListener.onMessageReceived(YsxSdkHelper.getKhIMMessageFromInviteMeeting(inviteMeeting));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            imMessageListener.onMessageReceived(YsxSdkHelper.getKhIMMessageFromInviteMeeting(inviteMeeting));
+                        }
+                    });
                 }
             }
         }).setIMOflineLinePushConfig(imOflineLinePushConfig);
