@@ -163,6 +163,8 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         }
         if (size < 3) {
             layoutManager.setSpanCount(size);
+        } else {
+            layoutManager.setSpanCount(3);
         }
         smartAdapter.refreshData(users, false);
     }
