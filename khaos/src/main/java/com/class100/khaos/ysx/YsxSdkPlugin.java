@@ -1,6 +1,11 @@
 package com.class100.khaos.ysx;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
+import android.widget.Toast;
 
 import com.chinamobile.ysx.YSXError;
 import com.chinamobile.ysx.YSXIMAction;
@@ -35,6 +40,7 @@ import com.class100.atropos.generic.AtTexts;
 import com.class100.hades.http.HaApiCallback;
 import com.class100.hades.http.HaApiResponse;
 import com.class100.hades.http.HaHttpClient;
+import com.class100.khaos.IncomingCallActivity;
 import com.class100.khaos.KhAbsSdk;
 import com.class100.khaos.KhSdkListener;
 import com.class100.khaos.KhUserProfile;
@@ -69,6 +75,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     private static final String APP_SECRET = "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr";
 
     private SdkAuthListener authListener;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void load() {
@@ -127,28 +134,24 @@ public class YsxSdkPlugin extends KhAbsSdk {
 //                 *
                 switch (action) {
                     case YSXIMAction.ACTION_JOINMEETING:
-                    /*
                     mHandler.post(() -> {
-                        Toast.makeText(getApplicationContext(), "收到会议提醒，请加入会议", Toast.LENGTH_SHORT).show();
-                        Intent intent1 = new Intent(LoginActivity.this, IncomingCallActivity.class);
-                        intent1.putExtra("inviteMeeting", inviteMeeting);
-                        startActivity(intent1);
+                        Toast.makeText(env._app, "收到会议提醒，请加入会议", Toast.LENGTH_SHORT).show();
+//                        Intent intent1 = new Intent(env._app, IncomingCallActivity.class);
+//                        intent1.putExtra("inviteMeeting", inviteMeeting);
+//                        env._app.startActivity(intent1);
                     });
-                    */
                         break;
                     case YSXIMAction.ACTION_STARTMEETING:
-                    /*
                     mHandler.post(() -> {
-                        Toast.makeText(getApplicationContext(), "收到预约会议提醒，请加入会议", Toast.LENGTH_SHORT).show();
-                        mEdtMeetingNo.setText(String.valueOf(inviteMeeting.getMeetingNo()));
-                        edtMeetingId.setText(inviteMeeting.getMeetingId());
-                        edtMeetingType.setText(String.valueOf(inviteMeeting.getMeetingType()));
-                        edtMeetingTopic.setText(inviteMeeting.getTopic());
-                        Intent intent1 = new Intent(LoginActivity.this, IncomingCallActivity.class);
-                        intent1.putExtra("inviteMeeting", inviteMeeting);
-                        startActivity(intent1);
+                        Toast.makeText(env._app, "收到预约会议提醒，请加入会议", Toast.LENGTH_SHORT).show();
+//                        mEdtMeetingNo.setText(String.valueOf(inviteMeeting.getMeetingNo()));
+//                        edtMeetingId.setText(inviteMeeting.getMeetingId());
+//                        edtMeetingType.setText(String.valueOf(inviteMeeting.getMeetingType()));
+//                        edtMeetingTopic.setText(inviteMeeting.getTopic());
+//                        Intent intent1 = new Intent(env._app, IncomingCallActivity.class);
+//                        intent1.putExtra("inviteMeeting", inviteMeeting);
+//                        env._app.startActivity(intent1);
                     });
-                    */
                         break;
                     case YSXIMAction.ACTION_REFRESH_MEETINGLIST://刷新会议列表
                         break;
