@@ -129,68 +129,13 @@ public class YsxSdkPlugin extends KhAbsSdk {
             public void onMeassageReceived(InviteMeeting inviteMeeting) {
                 AtLog.d(TAG, "onMessageReceived", "action:" + inviteMeeting.getAction() + ", meetingNo:" + inviteMeeting.getMeetingNo());
                 if (imMessageListener != null) {
-                    imMessageListener.onMessageReceived(YsxSdkHelper.getKhIMMessageFromInviteMeeting(inviteMeeting));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            imMessageListener.onMessageReceived(YsxSdkHelper.getKhIMMessageFromInviteMeeting(inviteMeeting));
+                        }
+                    });
                 }
-//                int action = inviteMeeting.getAction();
-////                * action == 0 加入会议
-////                 *action == 1 启动会议
-////                 *action == 2 刷新列表
-////                 *
-//                switch (action) {
-//                    case YSXIMAction.ACTION_JOINMEETING:
-//                    mHandler.post(() -> {
-//                        Toast.makeText(env._app, "收到会议提醒，请加入会议", Toast.LENGTH_SHORT).show();
-////                        Intent intent1 = new Intent(env._app, IncomingCallActivity.class);
-////                        intent1.putExtra("inviteMeeting", inviteMeeting);
-////                        env._app.startActivity(intent1);
-//                    });
-//                        break;
-//                    case YSXIMAction.ACTION_STARTMEETING:
-//                    mHandler.post(() -> {
-//                        Toast.makeText(env._app, "收到预约会议提醒，请加入会议", Toast.LENGTH_SHORT).show();
-////                        mEdtMeetingNo.setText(String.valueOf(inviteMeeting.getMeetingNo()));
-////                        edtMeetingId.setText(inviteMeeting.getMeetingId());
-////                        edtMeetingType.setText(String.valueOf(inviteMeeting.getMeetingType()));
-////                        edtMeetingTopic.setText(inviteMeeting.getTopic());
-////                        Intent intent1 = new Intent(env._app, IncomingCallActivity.class);
-////                        intent1.putExtra("inviteMeeting", inviteMeeting);
-////                        env._app.startActivity(intent1);
-//                    });
-//                        break;
-//                    case YSXIMAction.ACTION_REFRESH_MEETINGLIST://刷新会议列表
-//                        break;
-//
-//                    case YSXIMAction.ACTION_LEAVEMEETING:
-//                        //退出会议
-////                  Toast.makeText(getApplicationContext(),"会议结束",Toast.LENGTH_LONG).show();
-//                        if (inviteMeeting.getMeetingType() == 1) {
-//                            YSXSdk sdk1 = YSXSdk.getInstance();
-//                            YSXMeetingService meetingService = sdk1.getMeetingService();
-//                            meetingService.leaveCurrentMeeting(true);
-//                        }
-//                        break;
-//                    case YSXIMAction.ACTION_MUTE:
-//                        //会议静音
-//                    /*
-//                    LoginActivity.this.runOnUiThread(() -> {
-//                        YSXInMeetingService inMeetingService = YSXSdk.getInstance().getInMeetingService();
-//                        YSXInMeetingAudioController ysxInMeetingVideoController = inMeetingService.getInMeetingAudioController();
-//                        ysxInMeetingVideoController.muteMyAudio(true);
-//                    });
-//                     */
-//                        break;
-//                    case YSXIMAction.ACTION_UNMUTE:
-//                        //解除静音
-//                        // LoginActivity.this.runOnUiThread(() -> YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().muteMyAudio(false));
-//
-//                        break;
-//                    //收到邀请应答
-//                    case YSXIMAction.ACTION_INVITEANSWER_CALLBACK:
-//                        if (inviteMeeting.getAnswerCode() == 0) {
-//
-//                        }
-//                        break;
-//                }
             }
         }).setIMOflineLinePushConfig(imOflineLinePushConfig);
         YSXImConfig ysxImConfig = builder.create();
