@@ -69,6 +69,10 @@ public interface KhSdkAbility extends AtAbility {
 
     void setInitializeListener(OnSdkInitializeListener listener);
 
+    void setIMMessageListener(OnIMMessageListener listener);
+
+    void useIMSDk(boolean isUse);
+
     void addMeetingListener(OnMeetingStatusChangedListener listener);
 
     void removeMeetingListener(OnMeetingStatusChangedListener listener);
@@ -77,6 +81,10 @@ public interface KhSdkAbility extends AtAbility {
         void onInitialized(@NonNull KhAbsSdk sdk);
 
         void onError();
+    }
+
+    interface OnIMMessageListener {
+        void onMessageReceived(KhIMMessage khIMMessage);
     }
 
     interface OnMeetingStatusChangedListener {
@@ -110,6 +118,27 @@ public interface KhSdkAbility extends AtAbility {
         private int value = 0;
 
         KhMeetingStatus(int value) {
+            this.value = value;
+        }
+
+        public int value() {
+            return this.value;
+        }
+    }
+
+    enum KhIMAction {
+        ACTION_JOINMEETING(0),
+        ACTION_STARTMEETING(1),
+        ACTION_REFRESH_MEETINGLIST(2),
+        ACTION_LEAVEMEETING(7),
+        ACTION_MUTE(8),
+        ACTION_UNMUTE(9),
+        ACTION_INVITEANSWER_CALLBACK(12),
+        ACTION_CLOUDRECORD_TRANSCODING_FINISH(26);
+
+        private int value = 0;
+
+        KhIMAction(int value) {
             this.value = value;
         }
 
