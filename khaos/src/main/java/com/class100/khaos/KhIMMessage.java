@@ -5,203 +5,157 @@ import com.chinamobile.ysx.iminterface.InviteMeeting;
 import java.io.Serializable;
 
 public class KhIMMessage implements Serializable {
-    private boolean DisableAudio;
-    private boolean DisableVideo;
-    private boolean IsMeetingEnd;
-    private String OwnerId;
-    private String UTCSendTime;
-    private long MeetingNo;
-    private String MeetingId;
-    private int Action;
-    private String Topic;
-    private String Id;
-    private String StartTime;
-    private int MeetingType;
-    private String SendTime;
-    private String UserName;
-    private String HeadPath;
-    private int AnswerCode;
-    private String Mobile;
+    private boolean disableAudio;
+    private boolean disableVideo;
+    private boolean isMeetingEnd;
+    private String ownerId;
+    private String utcSendTime;
+    private long meetingNo;
+    private String meetingId;
+    private int action;
+    private String topic;
+    private String id;
+    private String startTime;
+    private int meetingType;
+    private String sendTime;
+    private String userName;
+    private String headPath;
+    private int answerCode;
+    private String mobile;
 
     public boolean isDisableAudio() {
-        return DisableAudio;
+        return disableAudio;
     }
 
     public void setDisableAudio(boolean disableAudio) {
-        DisableAudio = disableAudio;
+        this.disableAudio = disableAudio;
     }
 
     public boolean isDisableVideo() {
-        return DisableVideo;
+        return disableVideo;
     }
 
     public void setDisableVideo(boolean disableVideo) {
-        DisableVideo = disableVideo;
+        this.disableVideo = disableVideo;
     }
 
     public boolean isMeetingEnd() {
-        return IsMeetingEnd;
+        return isMeetingEnd;
     }
 
     public void setMeetingEnd(boolean meetingEnd) {
-        IsMeetingEnd = meetingEnd;
+        isMeetingEnd = meetingEnd;
     }
 
     public String getOwnerId() {
-        return OwnerId;
+        return ownerId;
     }
 
     public void setOwnerId(String ownerId) {
-        OwnerId = ownerId;
+        this.ownerId = ownerId;
     }
 
-    public String getUTCSendTime() {
-        return UTCSendTime;
+    public String getUtcSendTime() {
+        return utcSendTime;
     }
 
-    public void setUTCSendTime(String UTCSendTime) {
-        this.UTCSendTime = UTCSendTime;
+    public void setUtcSendTime(String utcSendTime) {
+        this.utcSendTime = utcSendTime;
     }
 
     public long getMeetingNo() {
-        return MeetingNo;
+        return meetingNo;
     }
 
     public void setMeetingNo(long meetingNo) {
-        MeetingNo = meetingNo;
+        this.meetingNo = meetingNo;
     }
 
     public String getMeetingId() {
-        return MeetingId;
+        return meetingId;
     }
 
     public void setMeetingId(String meetingId) {
-        MeetingId = meetingId;
+        this.meetingId = meetingId;
     }
 
     public int getAction() {
-        return Action;
+        return action;
     }
 
     public void setAction(int action) {
-        Action = action;
+        this.action = action;
     }
 
     public String getTopic() {
-        return Topic;
+        return topic;
     }
 
     public void setTopic(String topic) {
-        Topic = topic;
+        this.topic = topic;
     }
 
     public String getId() {
-        return Id;
+        return id;
     }
 
     public void setId(String id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getStartTime() {
-        return StartTime;
+        return startTime;
     }
 
     public void setStartTime(String startTime) {
-        StartTime = startTime;
+        this.startTime = startTime;
     }
 
     public int getMeetingType() {
-        return MeetingType;
+        return meetingType;
     }
 
     public void setMeetingType(int meetingType) {
-        MeetingType = meetingType;
+        this.meetingType = meetingType;
     }
 
     public String getSendTime() {
-        return SendTime;
+        return sendTime;
     }
 
     public void setSendTime(String sendTime) {
-        SendTime = sendTime;
+        this.sendTime = sendTime;
     }
 
     public String getUserName() {
-        return UserName;
+        return userName;
     }
 
     public void setUserName(String userName) {
-        UserName = userName;
+        this.userName = userName;
     }
 
     public String getHeadPath() {
-        return HeadPath;
+        return headPath;
     }
 
     public void setHeadPath(String headPath) {
-        HeadPath = headPath;
+        this.headPath = headPath;
     }
 
     public int getAnswerCode() {
-        return AnswerCode;
+        return answerCode;
     }
 
     public void setAnswerCode(int answerCode) {
-        AnswerCode = answerCode;
+        this.answerCode = answerCode;
     }
 
     public String getMobile() {
-        return Mobile;
+        return mobile;
     }
 
     public void setMobile(String mobile) {
-        Mobile = mobile;
-    }
-
-    @Override
-    public String toString() {
-        return "KhIMMessage{" +
-                "DisableAudio=" + DisableAudio +
-                ", DisableVideo=" + DisableVideo +
-                ", IsMeetingEnd=" + IsMeetingEnd +
-                ", OwnerId='" + OwnerId + '\'' +
-                ", UTCSendTime='" + UTCSendTime + '\'' +
-                ", MeetingNo=" + MeetingNo +
-                ", MeetingId='" + MeetingId + '\'' +
-                ", Action=" + Action +
-                ", Topic='" + Topic + '\'' +
-                ", Id='" + Id + '\'' +
-                ", StartTime='" + StartTime + '\'' +
-                ", MeetingType=" + MeetingType +
-                ", SendTime='" + SendTime + '\'' +
-                ", UserName='" + UserName + '\'' +
-                ", HeadPath='" + HeadPath + '\'' +
-                ", AnswerCode=" + AnswerCode +
-                ", Mobile='" + Mobile + '\'' +
-                '}';
-    }
-
-
-    public static KhIMMessage fromInviteMeeting(InviteMeeting inviteMeeting) {
-        KhIMMessage khIMMessage = new KhIMMessage();
-        khIMMessage.setDisableAudio(inviteMeeting.isDisableAudio());
-        khIMMessage.setDisableAudio(inviteMeeting.isDisableAudio());
-        khIMMessage.setMeetingEnd(inviteMeeting.isMeetingEnd());
-        khIMMessage.setOwnerId(inviteMeeting.getOwnerId());
-        khIMMessage.setUTCSendTime(inviteMeeting.getUTCSendTime());
-        khIMMessage.setMeetingNo(inviteMeeting.getMeetingNo());
-        khIMMessage.setMeetingId(inviteMeeting.getMeetingId());
-        khIMMessage.setAction(inviteMeeting.getAction());
-        khIMMessage.setTopic(inviteMeeting.getTopic());
-        khIMMessage.setId(inviteMeeting.getId());
-        khIMMessage.setStartTime(inviteMeeting.getStartTime());
-        khIMMessage.setMeetingType(inviteMeeting.getMeetingType());
-        khIMMessage.setSendTime(inviteMeeting.getSendTime());
-        khIMMessage.setUserName(inviteMeeting.getUserName());
-        khIMMessage.setHeadPath(inviteMeeting.getHeadPath());
-        khIMMessage.setAnswerCode(inviteMeeting.getAnswerCode());
-        khIMMessage.setMobile(inviteMeeting.getMobile());
-        return null;
+        this.mobile = mobile;
     }
 }

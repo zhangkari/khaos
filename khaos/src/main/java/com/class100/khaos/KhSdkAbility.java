@@ -71,6 +71,8 @@ public interface KhSdkAbility extends AtAbility {
 
     void setIMMessageListener(OnIMMessageListener listener);
 
+    void useIMSDk(boolean isUse);
+
     void addMeetingListener(OnMeetingStatusChangedListener listener);
 
     void removeMeetingListener(OnMeetingStatusChangedListener listener);

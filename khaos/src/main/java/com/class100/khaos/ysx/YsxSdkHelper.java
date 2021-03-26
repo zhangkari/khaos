@@ -2,7 +2,9 @@ package com.class100.khaos.ysx;
 
 import com.chinamobile.ysx.YSXSdk;
 import com.chinamobile.ysx.bean.YSXMeetingList;
+import com.chinamobile.ysx.iminterface.InviteMeeting;
 import com.class100.atropos.generic.AtCollections;
+import com.class100.khaos.KhIMMessage;
 import com.class100.khaos.resp.KhRespGetMeetings;
 
 import java.text.SimpleDateFormat;
@@ -80,5 +82,27 @@ public final class YsxSdkHelper {
             result.meetings.add(adapt(list.getData().get(i)));
         }
         return result;
+    }
+
+    public static KhIMMessage getKhIMMessageFromInviteMeeting(InviteMeeting inviteMeeting) {
+        KhIMMessage khIMMessage = new KhIMMessage();
+        khIMMessage.setDisableAudio(inviteMeeting.isDisableAudio());
+        khIMMessage.setDisableAudio(inviteMeeting.isDisableAudio());
+        khIMMessage.setMeetingEnd(inviteMeeting.isMeetingEnd());
+        khIMMessage.setOwnerId(inviteMeeting.getOwnerId());
+        khIMMessage.setUtcSendTime(inviteMeeting.getUTCSendTime());
+        khIMMessage.setMeetingNo(inviteMeeting.getMeetingNo());
+        khIMMessage.setMeetingId(inviteMeeting.getMeetingId());
+        khIMMessage.setAction(inviteMeeting.getAction());
+        khIMMessage.setTopic(inviteMeeting.getTopic());
+        khIMMessage.setId(inviteMeeting.getId());
+        khIMMessage.setStartTime(inviteMeeting.getStartTime());
+        khIMMessage.setMeetingType(inviteMeeting.getMeetingType());
+        khIMMessage.setSendTime(inviteMeeting.getSendTime());
+        khIMMessage.setUserName(inviteMeeting.getUserName());
+        khIMMessage.setHeadPath(inviteMeeting.getHeadPath());
+        khIMMessage.setAnswerCode(inviteMeeting.getAnswerCode());
+        khIMMessage.setMobile(inviteMeeting.getMobile());
+        return null;
     }
 }

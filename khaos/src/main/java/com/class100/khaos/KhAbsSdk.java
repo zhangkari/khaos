@@ -9,6 +9,7 @@ public abstract class KhAbsSdk extends AtContextAbility implements KhSdkAbility 
     protected OnSdkInitializeListener initializeListener;
     protected OnIMMessageListener imMessageListener;
     protected Set<OnMeetingStatusChangedListener> meetingListeners;
+    protected boolean useIMSdk = false;
 
     public KhAbsSdk() {
         meetingListeners = new HashSet<>();
@@ -20,6 +21,10 @@ public abstract class KhAbsSdk extends AtContextAbility implements KhSdkAbility 
 
     public void setIMMessageListener(OnIMMessageListener listener) {
         this.imMessageListener = listener;
+    }
+
+    public void useIMSDk(boolean isUse){
+        this.useIMSdk = isUse;
     }
 
     public void addMeetingListener(OnMeetingStatusChangedListener listener) {
