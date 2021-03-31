@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="输入密码"
-            android:inputType="phone"
+            android:inputType="text"
             android:minWidth="100dp" />
 
         <Button
