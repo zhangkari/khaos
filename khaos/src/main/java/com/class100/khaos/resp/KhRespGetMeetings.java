@@ -1,5 +1,6 @@
 package com.class100.khaos.resp;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class KhRespGetMeetings {
@@ -14,7 +15,7 @@ public class KhRespGetMeetings {
 
     public List<Meeting> meetings;
 
-    public static class Meeting {
+    public static class Meeting implements Serializable {
         public String ownerId;
         public String hostName;
         public String mobileNo;
@@ -31,7 +32,7 @@ public class KhRespGetMeetings {
         public List<Participant> participants;
     }
 
-    public static class Participant {
+    public static class Participant implements Serializable{
         public String id;
         public String name;
         public String mobileNo;
