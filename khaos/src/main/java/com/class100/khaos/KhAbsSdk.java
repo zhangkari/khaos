@@ -12,6 +12,7 @@ public abstract class KhAbsSdk extends AtContextAbility implements KhSdkAbility 
     protected boolean useIMSdk = false;
 
     public KhAbsSdk() {
+        imMessageListeners = new HashSet<>();
         meetingListeners = new HashSet<>();
     }
 
