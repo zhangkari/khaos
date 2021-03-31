@@ -49,11 +49,15 @@ public interface KhMeetingContract {
 
         void showAttenders(List<MeetingUser> attenders);
 
+        void showMeetingTitle(String host, String meetingNo, String duration);
+
         void showLeaveDialog();
     }
 
     interface IMeetingPresenter {
         void loadMeetingMenu();
+
+        void loadMeetingTitle();
 
         void performMenuClick(@MenuConstants.MeetingMenuId int id);
 

@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 
 import com.class100.atropos.AtAbility;
+import com.class100.khaos.meeting.KhMeetingContract;
 import com.class100.khaos.req.KhReqCreateScheduled;
 import com.class100.khaos.req.KhReqDeleteMeeting;
 import com.class100.khaos.req.KhReqGetMeetingInfo;
@@ -57,7 +58,9 @@ public interface KhSdkAbility extends AtAbility {
 
     KhUserProfile getUserProfile();
 
-    List<String> getMeetingUsers();
+    List<KhMeetingContract.MeetingUser> getMeetingUsers();
+
+    boolean isMeetingHost();
 
     void rotateLocalVideo(int degree);
 

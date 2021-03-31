@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -80,12 +79,9 @@ public class MeetingMenuView extends FrameLayout {
     }
 
     private void setListener() {
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                refreshCheckBoxText(isChecked);
-                animateMenuPanel(isChecked);
-            }
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            refreshCheckBoxText(isChecked);
+            animateMenuPanel(isChecked);
         });
         checkBox.setChecked(true);
     }
@@ -95,7 +91,7 @@ public class MeetingMenuView extends FrameLayout {
     }
 
     private void animateMenuPanel(boolean show) {
-        recyclerView.setVisibility(show ? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
     public interface OnMenuItemClickListener {

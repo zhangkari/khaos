@@ -80,7 +80,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             public void onMeetingStatusChanged(KhSdkAbility.KhMeetingStatus status, int errorCode) {
                 Log.d(TAG, "onMeetingStatusChanged:" + status);
                 if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_INMEETING) {
-                    refreshTitle();
+                    presenter.loadMeetingTitle();
                 }
             }
         };
@@ -106,12 +106,6 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
                 Log.d(TAG, "onUserVideoStatusChanged:" + "userId = " + userId);
             }
         });
-    }
-
-    private void refreshTitle() {
-        AtLog.d(TAG, "init", "meetingNo:" + KhSdkManager.getInstance().getSdk().getCurrentMeetingNo());
-        AtLog.d(TAG, "init", "meetingId:" + KhSdkManager.getInstance().getSdk().getCurrentMeetingId());
-        titleView.setMeetingNo(KhSdkManager.getInstance().getSdk().getCurrentMeetingNo());
     }
 
     @Override
@@ -162,6 +156,13 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
     }
 
     @Override
+    public void showMeetingTitle(String host, String meetingNo, String duration) {
+        titleView.setMeetingHost(host);
+        titleView.setMeetingNo(meetingNo);
+        titleView.setMeetingElapsed(duration);
+    }
+
+    @Override
     public void showLeaveDialog() {
         new LeaveMeetingDialog().setOnDecideListener(new LeaveMeetingDialog.OnDecideListener() {
             @Override
@@ -176,5 +177,10 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
                 finish();
             }
         }).show(getSupportFragmentManager(), TAG);
+    }
+
+    @Override
+    public void onBackPressed() {
+        showLeaveDialog();
     }
 }

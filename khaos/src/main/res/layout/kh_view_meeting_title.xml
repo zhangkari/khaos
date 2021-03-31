@@ -23,6 +23,7 @@
     <View
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
+        android:layout_margin="2dp"
         android:background="#f1f1f1"
         android:padding="2dp" />
 
@@ -43,6 +44,7 @@
     <View
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
+        android:layout_margin="2dp"
         android:background="#f1f1f1"
         android:padding="2dp" />
 

@@ -1,15 +1,12 @@
 package com.class100.khaos.ysx;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
-import android.widget.Toast;
 
 import com.chinamobile.ysx.YSXError;
-import com.chinamobile.ysx.YSXIMAction;
 import com.chinamobile.ysx.YSXImConfig;
+import com.chinamobile.ysx.YSXInMeetingService;
 import com.chinamobile.ysx.YSXInstantMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingParams;
@@ -40,11 +37,10 @@ import com.class100.atropos.generic.AtTexts;
 import com.class100.hades.http.HaApiCallback;
 import com.class100.hades.http.HaApiResponse;
 import com.class100.hades.http.HaHttpClient;
-import com.class100.khaos.IncomingCallActivity;
 import com.class100.khaos.KhAbsSdk;
-import com.class100.khaos.KhIMMessage;
 import com.class100.khaos.KhSdkListener;
 import com.class100.khaos.KhUserProfile;
+import com.class100.khaos.meeting.KhMeetingContract;
 import com.class100.khaos.req.KhReqCreateScheduled;
 import com.class100.khaos.req.KhReqDeleteMeeting;
 import com.class100.khaos.req.KhReqGetMeetingInfo;
@@ -569,17 +565,33 @@ public class YsxSdkPlugin extends KhAbsSdk {
         return new KhUserProfile(user.getUserId(), user.getUserName());
     }
 
+    private KhMeetingContract.MeetingUser buildMeetingUserById(String id) {
+        KhMeetingContract.MeetingUser user = new KhMeetingContract.MeetingUser();
+        user.id = id;
+        YSXInMeetingService service = YSXSdk.getInstance().getInMeetingService();
+        long uid = Long.parseLong(id);
+        user.name = service.getUserInfoById(uid).getUserName();
+        user.isHost = service.isHostUser(uid);
+        return user;
+    }
+
     @Override
-    public List<String> getMeetingUsers() {
-        List<Long> users = YSXSdk.getInstance().getInMeetingService().getInMeetingUserList();
+    public List<KhMeetingContract.MeetingUser> getMeetingUsers() {
+        YSXInMeetingService service = YSXSdk.getInstance().getInMeetingService();
+        List<Long> users = service.getInMeetingUserList();
         if (AtCollections.isEmpty(users)) {
             return new ArrayList<>(0);
         }
-        List<String> data = new ArrayList<>(users.size());
+        List<KhMeetingContract.MeetingUser> data = new ArrayList<>(users.size());
         for (Long id : users) {
-            data.add(String.valueOf(id));
+            data.add(buildMeetingUserById(String.valueOf(id)));
         }
         return data;
+    }
+
+    @Override
+    public boolean isMeetingHost() {
+        return YSXSdk.getInstance().getInMeetingService().isMeetingHost();
     }
 
     @Override

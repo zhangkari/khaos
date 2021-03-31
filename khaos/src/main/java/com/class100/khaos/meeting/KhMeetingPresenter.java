@@ -1,5 +1,7 @@
 package com.class100.khaos.meeting;
 
+import com.class100.atropos.generic.AtCollections;
+import com.class100.khaos.KhSdkManager;
 import com.class100.khaos.meeting.vm.MeetingMenuItem;
 
 import java.util.List;
@@ -32,6 +34,37 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
                 }
             }
         });
+    }
+
+    @Override
+    public void loadMeetingTitle() {
+        refreshMeetingTitle();
+        // todo poll meeting duration
+    }
+
+    private void refreshMeetingTitle() {
+        if (view != null) {
+            KhMeetingContract.MeetingUser host = pickMeetingHostUser();
+            if (host == null) {
+                view.showMeetingTitle("", "", "00:00");
+            } else {
+                view.showMeetingTitle(host.name, KhSdkManager.getInstance().getSdk().getCurrentMeetingNo(), "00:05");
+            }
+        }
+    }
+
+    private KhMeetingContract.MeetingUser pickMeetingHostUser() {
+        List<KhMeetingContract.MeetingUser> users = KhSdkManager.getInstance().getSdk().getMeetingUsers();
+        KhMeetingContract.MeetingUser host = null;
+        if (!AtCollections.isEmpty(users)) {
+            for (KhMeetingContract.MeetingUser u : users) {
+                if (u.isHost) {
+                    host = u;
+                    break;
+                }
+            }
+        }
+        return host;
     }
 
     @Override
