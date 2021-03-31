@@ -543,14 +543,24 @@ public class YsxSdkPlugin extends KhAbsSdk {
                     @Override
                     public void onFailure(Result result) {
                         if (listener != null) {
-                            listener.onError(result.getCode(), result.getMsg());
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.onError(result.getCode(), result.getMsg());
+                                }
+                            });
                         }
                     }
 
                     @Override
                     public void onResponse(YSXMeetingList resp) {
                         if (listener != null) {
-                            listener.onSuccess(YsxSdkHelper.adapt(resp));
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.onSuccess(YsxSdkHelper.adapt(resp));
+                                }
+                            });
                         }
                     }
                 }
