@@ -72,7 +72,9 @@ public interface KhSdkAbility extends AtAbility {
 
     void setInitializeListener(OnSdkInitializeListener listener);
 
-    void setIMMessageListener(OnIMMessageListener listener);
+    void addIMMessageListener(OnIMMessageListener listener);
+
+    void removeIMMessageListener(OnIMMessageListener listener);
 
     void useIMSDk(boolean isUse);
 

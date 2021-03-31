@@ -7,7 +7,7 @@ import java.util.Set;
 
 public abstract class KhAbsSdk extends AtContextAbility implements KhSdkAbility {
     protected OnSdkInitializeListener initializeListener;
-    protected OnIMMessageListener imMessageListener;
+    protected Set<OnIMMessageListener> imMessageListeners;
     protected Set<OnMeetingStatusChangedListener> meetingListeners;
     protected boolean useIMSdk = false;
 
@@ -15,24 +15,33 @@ public abstract class KhAbsSdk extends AtContextAbility implements KhSdkAbility 
         meetingListeners = new HashSet<>();
     }
 
+    @Override
     public void setInitializeListener(OnSdkInitializeListener listener) {
         this.initializeListener = listener;
     }
 
-    public void setIMMessageListener(OnIMMessageListener listener) {
-        this.imMessageListener = listener;
+    @Override
+    public void addIMMessageListener(OnIMMessageListener listener) {
+        imMessageListeners.add(listener);
     }
 
+    @Override
+    public void removeIMMessageListener(OnIMMessageListener listener) {
+        imMessageListeners.remove(listener);
+    }
+
+    @Override
     public void useIMSDk(boolean isUse) {
         this.useIMSdk = isUse;
     }
 
+    @Override
     public void addMeetingListener(OnMeetingStatusChangedListener listener) {
         meetingListeners.add(listener);
     }
 
+    @Override
     public void removeMeetingListener(OnMeetingStatusChangedListener listener) {
         meetingListeners.remove(listener);
     }
-
 }

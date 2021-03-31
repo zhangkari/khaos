@@ -38,6 +38,7 @@ import com.class100.hades.http.HaApiCallback;
 import com.class100.hades.http.HaApiResponse;
 import com.class100.hades.http.HaHttpClient;
 import com.class100.khaos.KhAbsSdk;
+import com.class100.khaos.KhIMMessage;
 import com.class100.khaos.KhSdkListener;
 import com.class100.khaos.KhUserProfile;
 import com.class100.khaos.meeting.KhMeetingContract;
@@ -124,11 +125,11 @@ public class YsxSdkPlugin extends KhAbsSdk {
             @Override
             public void onMeassageReceived(InviteMeeting inviteMeeting) {
                 AtLog.d(TAG, "onMessageReceived", "action:" + inviteMeeting.getAction() + ", meetingNo:" + inviteMeeting.getMeetingNo());
-                if (imMessageListener != null) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            imMessageListener.onMessageReceived(YsxSdkHelper.getKhIMMessageFromInviteMeeting(inviteMeeting));
+                if (!AtCollections.isEmpty(imMessageListeners)) {
+                    KhIMMessage message = YsxSdkHelper.getKhIMMessageFromInviteMeeting(inviteMeeting);
+                    mHandler.post(() -> {
+                        for (OnIMMessageListener listener : imMessageListeners) {
+                            listener.onMessageReceived(message);
                         }
                     });
                 }
