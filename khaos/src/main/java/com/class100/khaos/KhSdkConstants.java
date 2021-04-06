@@ -15,10 +15,12 @@ public final class KhSdkConstants {
     }
 
     public static class InitParameters {
+        public final boolean isDebugEnv;
         public final String appKey;
         public final String appSecret;
 
-        public InitParameters(String appKey, String appSecret) {
+        public InitParameters(boolean isDebug, String appKey, String appSecret) {
+            this.isDebugEnv = isDebug;
             this.appKey = appKey;
             this.appSecret = appSecret;
         }

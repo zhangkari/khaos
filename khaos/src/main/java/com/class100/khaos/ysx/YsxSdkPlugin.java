@@ -78,7 +78,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
         if (useIMSdk) {
             initializeIMSdk(sdk, initParameters.appKey, initParameters.appSecret);
         }
-        sdk.initSDK(env._app, env._app, initParameters.appKey, initParameters.appSecret, true, Enviroment.ENV_DEBUG, (errorCode, internalErrorCode) -> {
+        sdk.initSDK(env._app, env._app, initParameters.appKey, initParameters.appSecret, initParameters.isDebugEnv, Enviroment.ENV_DEBUG, (errorCode, internalErrorCode) -> {
             AtLog.d(TAG, "Init ysx sdk result", "errorCode=" + errorCode + ", internalErrorCode=" + internalErrorCode);
             if (errorCode != YSXError.SUCCESS) {
                 AtLog.d(TAG, "Init ysxSDK. Error", "");
