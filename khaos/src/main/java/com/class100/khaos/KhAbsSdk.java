@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class KhAbsSdk extends AtContextAbility implements KhSdkAbility {
+    protected KhSdkConstants.InitParameters initParameters;
     protected OnSdkInitializeListener initializeListener;
     protected Set<OnIMMessageListener> imMessageListeners;
     protected Set<OnMeetingStatusChangedListener> meetingListeners;
@@ -14,6 +15,11 @@ public abstract class KhAbsSdk extends AtContextAbility implements KhSdkAbility 
     public KhAbsSdk() {
         imMessageListeners = new HashSet<>();
         meetingListeners = new HashSet<>();
+    }
+
+    @Override
+    public void init(KhSdkConstants.InitParameters params) {
+        initParameters = params;
     }
 
     @Override

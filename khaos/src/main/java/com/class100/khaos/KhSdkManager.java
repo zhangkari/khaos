@@ -1,39 +1,23 @@
 package com.class100.khaos;
 
 import androidx.annotation.MainThread;
-import androidx.annotation.StringDef;
 
 import com.class100.atropos.AtAbility;
 import com.class100.khaos.ysx.YsxSdkPlugin;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
 import java.util.Map;
 
 public class KhSdkManager implements AtAbility {
     public static final String SDK_YSX = "sdk_ysx";
 
-    @StringDef({SDK_YSX})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface KhSdkChannel {
-
-    }
-
     private static volatile KhSdkManager _instance;
     private static KhAbsSdk currentSdk = new YsxSdkPlugin();
     private static final Map<String, KhAbsSdk> cachedSdk = new HashMap<>(4);
+    private static final Map<String, KhSdkConstants.InitParameters> initParams = new HashMap<>(4);
 
     @MainThread
-    public static void registerSdk(String key, KhAbsSdk sdk) {
-        cachedSdk.put(key, sdk);
-        if (currentSdk == null || currentSdk.getClass() == sdk.getClass()) {
-            currentSdk = sdk;
-        }
-    }
-
-    @MainThread
-    public static void switchChannel(@KhSdkChannel String channel) {
+    public static void switchChannel(@KhSdkConstants.KhSdkChannel String channel) {
         KhAbsSdk sdk = cachedSdk.get(channel);
         if (sdk != null) {
             if (currentSdk != null) {
@@ -55,9 +39,18 @@ public class KhSdkManager implements AtAbility {
         return _instance;
     }
 
+    public static void initSdk(@KhSdkConstants.KhSdkChannel String channel, KhSdkConstants.InitParameters params) {
+        initParams.put(channel, params);
+    }
+
     @Override
     public void load() {
         if (currentSdk != null) {
+            KhSdkConstants.InitParameters params = initParams.get(currentSdk.getName());
+            if (params == null) {
+                throw new RuntimeException("please call initSdk() first !");
+            }
+            currentSdk.init(params);
             currentSdk.load();
         }
     }

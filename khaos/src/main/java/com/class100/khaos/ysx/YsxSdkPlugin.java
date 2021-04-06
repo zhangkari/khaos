@@ -11,25 +11,19 @@ import com.chinamobile.ysx.YSXInstantMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingParams;
 import com.chinamobile.ysx.YSXMeetingService;
-import com.chinamobile.ysx.YSXMeetingServiceListener;
 import com.chinamobile.ysx.YSXMeetingSettingsHelper;
 import com.chinamobile.ysx.YSXMeetingStatus;
 import com.chinamobile.ysx.YSXMessageListener;
 import com.chinamobile.ysx.YSXSdk;
 import com.chinamobile.ysx.YSXSdkAuthenticationListener;
-import com.chinamobile.ysx.YSXSdkInitializeListener;
 import com.chinamobile.ysx.YSXStartMeetingOptions;
 import com.chinamobile.ysx.YSXStartMeetingParams4NormalUser;
-import com.chinamobile.ysx.auther.LoginResult;
-import com.chinamobile.ysx.auther.YSXLoginResultListener;
 import com.chinamobile.ysx.auther.bean.YSXUser;
 import com.chinamobile.ysx.bean.Result;
 import com.chinamobile.ysx.bean.ScheduledMeetingInfo;
 import com.chinamobile.ysx.bean.YSXMeetingList;
 import com.chinamobile.ysx.iminterface.IMOflineLinePushConfig;
 import com.chinamobile.ysx.iminterface.ImConnectionListener;
-import com.chinamobile.ysx.iminterface.ImMessageListener;
-import com.chinamobile.ysx.iminterface.InviteMeeting;
 import com.chinamobile.ysx.responselistener.ResponseListenerCommon;
 import com.class100.atropos.generic.AtCollections;
 import com.class100.atropos.generic.AtLog;
@@ -39,6 +33,7 @@ import com.class100.hades.http.HaApiResponse;
 import com.class100.hades.http.HaHttpClient;
 import com.class100.khaos.KhAbsSdk;
 import com.class100.khaos.KhIMMessage;
+import com.class100.khaos.KhSdkConstants;
 import com.class100.khaos.KhSdkListener;
 import com.class100.khaos.KhUserProfile;
 import com.class100.khaos.meeting.KhMeetingContract;
@@ -68,12 +63,8 @@ import java.util.List;
 public class YsxSdkPlugin extends KhAbsSdk {
     private static final String TAG = "YsxSdkPlugin";
 
-    // TODO Initialize int libNativeAtropos
-    private static final String APP_KEY = "FOwvZJf5DjpizygZahOH9hgyciQmgOsXR5eC";
-    private static final String APP_SECRET = "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr";
-
     private SdkAuthListener authListener;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void load() {
@@ -84,22 +75,19 @@ public class YsxSdkPlugin extends KhAbsSdk {
             return;
         }
         if (useIMSdk) {
-            initializeIMSdk(sdk, APP_KEY, APP_SECRET);
+            initializeIMSdk(sdk, initParameters.appKey, initParameters.appSecret);
         }
-        sdk.initSDK(env._app, env._app, APP_KEY, APP_SECRET, true, new YSXSdkInitializeListener() {
-            @Override
-            public void onYSXSdkInitializeResult(int errorCode, int internalErrorCode) {
-                AtLog.d(TAG, "Init ysx sdk result", "errorCode=" + errorCode + ", internalErrorCode=" + internalErrorCode);
-                if (errorCode != YSXError.SUCCESS) {
-                    AtLog.d(TAG, "Init ysxSDK. Error", "");
-                    if (initializeListener != null) {
-                        initializeListener.onError();
-                    }
-                    return;
+        sdk.initSDK(env._app, env._app, initParameters.appKey, initParameters.appSecret, true, (errorCode, internalErrorCode) -> {
+            AtLog.d(TAG, "Init ysx sdk result", "errorCode=" + errorCode + ", internalErrorCode=" + internalErrorCode);
+            if (errorCode != YSXError.SUCCESS) {
+                AtLog.d(TAG, "Init ysxSDK. Error", "");
+                if (initializeListener != null) {
+                    initializeListener.onError();
                 }
-                AtLog.d(TAG, "Init ysxSDK successfully", "");
-                loginSdk();
+                return;
             }
+            AtLog.d(TAG, "Init ysxSDK successfully", "");
+            loginSdk();
         });
     }
 
@@ -121,18 +109,15 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 YSXMeetingService meetingService = sdk12.getMeetingService();
                 meetingService.leaveCurrentMeeting(false);
             }
-        }).setImMessageListener(new ImMessageListener() {
-            @Override
-            public void onMeassageReceived(InviteMeeting inviteMeeting) {
-                AtLog.d(TAG, "onMessageReceived", "action:" + inviteMeeting.getAction() + ", meetingNo:" + inviteMeeting.getMeetingNo());
-                if (!AtCollections.isEmpty(imMessageListeners)) {
-                    KhIMMessage message = YsxSdkHelper.getKhIMMessageFromInviteMeeting(inviteMeeting);
-                    mHandler.post(() -> {
-                        for (OnIMMessageListener listener : imMessageListeners) {
-                            listener.onMessageReceived(message);
-                        }
-                    });
-                }
+        }).setImMessageListener(inviteMeeting -> {
+            AtLog.d(TAG, "onMessageReceived", "action:" + inviteMeeting.getAction() + ", meetingNo:" + inviteMeeting.getMeetingNo());
+            if (!AtCollections.isEmpty(imMessageListeners)) {
+                KhIMMessage message = YsxSdkHelper.getKhIMMessageFromInviteMeeting(inviteMeeting);
+                mHandler.post(() -> {
+                    for (OnIMMessageListener listener : imMessageListeners) {
+                        listener.onMessageReceived(message);
+                    }
+                });
             }
         }).setIMOflineLinePushConfig(imOflineLinePushConfig);
         YSXImConfig ysxImConfig = builder.create();
@@ -199,16 +184,13 @@ public class YsxSdkPlugin extends KhAbsSdk {
     private void loginSdkByToken(String token) {
         AtLog.d(TAG, "loginByToken", "previous token:" + token);
         registerSdkAuthListener();
-        YSXSdk.getInstance().loginByToken(token, APP_KEY, APP_SECRET, new YSXLoginResultListener() {
-            @Override
-            public void onLoginResult(LoginResult result) {
-                AtLog.d(TAG, "loginSdkByToken", "new token:" + result.getSdktoken());
-                if (result.code == 0) {
-                    customizeMeetingUI(true);
-                    String userId = YSXSdk.getInstance().getYSXuser().getUserId();
-                    String userName = YSXSdk.getInstance().getYSXuser().getUserName();
-                    AtLog.d(TAG, "loginSdkByToken", "userId:" + userId + ", userName:" + userName);
-                }
+        YSXSdk.getInstance().loginByToken(token, initParameters.appKey, initParameters.appSecret, result -> {
+            AtLog.d(TAG, "loginSdkByToken", "new token:" + result.getSdktoken());
+            if (result.code == 0) {
+                customizeMeetingUI(true);
+                String userId = YSXSdk.getInstance().getYSXuser().getUserId();
+                String userName = YSXSdk.getInstance().getYSXuser().getUserName();
+                AtLog.d(TAG, "loginSdkByToken", "userId:" + userId + ", userName:" + userName);
             }
         });
     }
@@ -262,6 +244,11 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     @Override
+    public String getName() {
+        return KhSdkConstants.SDK_YSX;
+    }
+
+    @Override
     public void startMeeting(Activity context, KhReqStartMeeting config) {
         YSXMeetingSettingsHelper helper = YSXSdk.getInstance().getMeetingSettingsHelper();
         helper.setAutoConnectVoIPWhenJoinMeeting(config.autoConnectAudioJoined);
@@ -291,16 +278,13 @@ public class YsxSdkPlugin extends KhAbsSdk {
         params.displayName = config.displayName;
 
         YSXMeetingService service = sdk.getMeetingService();
-        service.joinMeetingWithParams(context, config.id, config.type, params, opts, new YSXMessageListener() {
-            @Override
-            public void onCallBack(int i, String s) {
-                AtLog.d(TAG, "joinInstantMeeting", i + " , " + s);
-                if (listener != null) {
-                    if (i == KhMeetingStatus.MEETING_STATUS_INMEETING.value()) {
-                        listener.onSuccess(s);
-                    } else {
-                        listener.onError(i, s);
-                    }
+        service.joinMeetingWithParams(context, config.id, config.type, params, opts, (i, s) -> {
+            AtLog.d(TAG, "joinInstantMeeting", i + " , " + s);
+            if (listener != null) {
+                if (i == KhMeetingStatus.MEETING_STATUS_INMEETING.value()) {
+                    listener.onSuccess(s);
+                } else {
+                    listener.onError(i, s);
                 }
             }
         });
@@ -543,24 +527,14 @@ public class YsxSdkPlugin extends KhAbsSdk {
                     @Override
                     public void onFailure(Result result) {
                         if (listener != null) {
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listener.onError(result.getCode(), result.getMsg());
-                                }
-                            });
+                            mHandler.post(() -> listener.onError(result.getCode(), result.getMsg()));
                         }
                     }
 
                     @Override
                     public void onResponse(YSXMeetingList resp) {
                         if (listener != null) {
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listener.onSuccess(YsxSdkHelper.adapt(resp));
-                                }
-                            });
+                            mHandler.post(() -> listener.onSuccess(YsxSdkHelper.adapt(resp)));
                         }
                     }
                 }
@@ -647,12 +621,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
         if (listener == null) {
             return;
         }
-        MeetingVideoCallback.getInstance().addListener(new MeetingVideoCallback.VideoEvent() {
-            @Override
-            public void onUserVideoStatusChanged(long userId) {
-                listener.onUserVideoStatusChanged(String.valueOf(userId));
-            }
-        });
+        MeetingVideoCallback.getInstance().addListener(userId -> listener.onUserVideoStatusChanged(String.valueOf(userId)));
     }
 
     @Override
@@ -680,12 +649,9 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 if (initializeListener != null) {
                     initializeListener.onInitialized(plugin);
                 }
-                registerStatusChangedListener(new OnMeetingStatusChangedListener() {
-                    @Override
-                    public void onMeetingStatusChanged(KhMeetingStatus status, int errorCode) {
-                        for (OnMeetingStatusChangedListener listener : statusChangedListeners) {
-                            listener.onMeetingStatusChanged(status, errorCode);
-                        }
+                registerStatusChangedListener((status, errorCode) -> {
+                    for (OnMeetingStatusChangedListener listener : statusChangedListeners) {
+                        listener.onMeetingStatusChanged(status, errorCode);
                     }
                 });
             } else {
@@ -707,12 +673,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
         private void registerStatusChangedListener(final OnMeetingStatusChangedListener listener) {
             YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
-            service.addListener(new YSXMeetingServiceListener() {
-                @Override
-                public void onMeetingStatusChanged(YSXMeetingStatus ysxMeetingStatus, int i, int i1) {
-                    listener.onMeetingStatusChanged(adaptMeetingStatus(ysxMeetingStatus), i);
-                }
-            });
+            service.addListener((ysxMeetingStatus, i, i1) -> listener.onMeetingStatusChanged(adaptMeetingStatus(ysxMeetingStatus), i));
         }
     }
 
@@ -720,7 +681,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
         return convertEnum(status, KhMeetingStatus.class);
     }
 
-    static <EnumFrom, EnumTo> EnumTo convertEnum(EnumFrom from, Class<EnumTo> to) {
+    private static <EnumFrom extends Enum<?>, EnumTo extends Enum<?>> EnumTo convertEnum(EnumFrom from, Class<EnumTo> to) {
         EnumTo rReturn = null;
         if (to.isEnum()) {
             EnumTo[] array = to.getEnumConstants();

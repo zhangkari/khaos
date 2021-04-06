@@ -26,6 +26,11 @@ import com.class100.khaos.resp.KhRespUpdateMeeting;
 import java.util.List;
 
 public interface KhSdkAbility extends AtAbility {
+    @KhSdkConstants.KhSdkChannel
+    String getName();
+
+    void init(KhSdkConstants.InitParameters params);
+
     void startMeeting(Activity context, KhReqStartMeeting config);
 
     void joinMeeting(Activity context, KhReqJoinMeeting config);
