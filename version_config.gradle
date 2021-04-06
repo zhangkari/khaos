@@ -17,6 +17,7 @@ support.appcompat = "androidx.appcompat:appcompat:1.2.0"
 support.cardView = 'androidx.cardview:cardview:1.0.0'
 support.constraitLayout = 'androidx.constraintlayout:constraintlayout:2.0.4'
 support.recyclerView = 'androidx.recyclerview:recyclerview:1.0.0'
+support.material = "com.google.android.material:material:1.0.0-rc01"
 
 def libs = [:]
 libs.eventBus = "org.greenrobot:eventbus:3.2.0"

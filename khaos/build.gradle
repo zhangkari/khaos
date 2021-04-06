@@ -127,6 +127,7 @@ dependencies {
     implementation support.appcompat
     implementation support.constraitLayout
     implementation support.cardView
+    implementation support.material
     implementation support.recyclerView
 
     api vsn("com.class100.atropos:atropos:0.0.7")
