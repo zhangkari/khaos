@@ -1,6 +1,7 @@
 package com.class100.khaos;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,6 +40,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
 
     @Override
     public void onCreate(Bundle bundle) {
+        AtLog.d(TAG, "onCreate", "");
         super.onCreate(bundle);
         setContentView(R.layout.kh_activity_meeting);
         init();
@@ -66,6 +68,13 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         recyclerView.setAdapter(smartAdapter);
 
         checkVideoRotation(this);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        AtLog.d(TAG, "onNewIntent", "");
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     @Override
@@ -110,6 +119,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
 
     @Override
     public void onDestroy() {
+        AtLog.d(TAG, "onDestroy", "");
         KhSdkManager.getInstance().getSdk().leaveMeeting();
         KhSdkManager.getInstance().getSdk().removeMeetingListener(meetingStatusListener);
         presenter.detach();

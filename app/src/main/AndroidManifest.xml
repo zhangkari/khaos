@@ -29,6 +29,7 @@
 
         <activity
             android:name="com.class100.khaos.KhMeetingActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/MeetingTheme" />
 
