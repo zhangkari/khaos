@@ -73,6 +73,10 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
             case MenuConstants.menu_exit:
                 view.showLeaveDialog();
                 break;
+            case MenuConstants.menu_audio:
+                break;
+            case MenuConstants.menu_camera:
+                break;
         }
     }
 
