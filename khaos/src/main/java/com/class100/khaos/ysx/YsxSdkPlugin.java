@@ -78,18 +78,24 @@ public class YsxSdkPlugin extends KhAbsSdk {
         if (useIMSdk) {
             initializeIMSdk(sdk, initParameters.appKey, initParameters.appSecret);
         }
-        sdk.initSDK(env._app, env._app, initParameters.appKey, initParameters.appSecret, initParameters.isDebugEnv, Enviroment.ENV_DEBUG, (errorCode, internalErrorCode) -> {
-            AtLog.d(TAG, "Init ysx sdk result", "errorCode=" + errorCode + ", internalErrorCode=" + internalErrorCode);
-            if (errorCode != YSXError.SUCCESS) {
-                AtLog.d(TAG, "Init ysxSDK. Error", "");
-                if (initializeListener != null) {
-                    initializeListener.onError();
-                }
-                return;
-            }
-            AtLog.d(TAG, "Init ysxSDK successfully", "");
-            loginSdk();
-        });
+        sdk.initSDK(env._app,
+                env._app,
+                initParameters.appKey,
+                initParameters.appSecret,
+                initParameters.isDebugEnv,
+                initParameters.isDebugEnv ? Enviroment.ENV_DEBUG : Enviroment.ENV_RELEASE,
+                (errorCode, internalErrorCode) -> {
+                    AtLog.d(TAG, "Init ysx sdk result", "errorCode=" + errorCode + ", internalErrorCode=" + internalErrorCode);
+                    if (errorCode != YSXError.SUCCESS) {
+                        AtLog.d(TAG, "Init ysxSDK. Error", "");
+                        if (initializeListener != null) {
+                            initializeListener.onError();
+                        }
+                        return;
+                    }
+                    AtLog.d(TAG, "Init ysxSDK successfully", "");
+                    loginSdk();
+                });
     }
 
     private void initializeIMSdk(YSXSdk sdk, String appKey, String appSecret) {
