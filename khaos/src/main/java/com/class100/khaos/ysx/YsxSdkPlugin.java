@@ -718,6 +718,21 @@ public class YsxSdkPlugin extends KhAbsSdk {
         user.setUserId("");
     }
 
+    @Override
+    public boolean isMyVideoMuted() {
+        return YSXSdk.getInstance().getInMeetingService().getInMeetingVideoController().isMyVideoMuted();
+    }
+
+    @Override
+    public boolean canUnmuteMyVideo() {
+        return YSXSdk.getInstance().getInMeetingService().getInMeetingVideoController().canUnmuteMyVideo();
+    }
+
+    @Override
+    public void muteMyVideo(boolean mute) {
+        YSXSdk.getInstance().getInMeetingService().getInMeetingVideoController().muteMyVideo(mute);
+    }
+
     static class SdkAuthListener implements YSXSdkAuthenticationListener {
         private final Collection<OnMeetingStatusChangedListener> statusChangedListeners;
         private final OnSdkInitializeListener initializeListener;
