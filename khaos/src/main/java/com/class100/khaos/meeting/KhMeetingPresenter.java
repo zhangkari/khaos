@@ -1,6 +1,7 @@
 package com.class100.khaos.meeting;
 
 import com.class100.atropos.generic.AtCollections;
+import com.class100.khaos.KhSdkAbility;
 import com.class100.khaos.KhSdkManager;
 import com.class100.khaos.meeting.vm.MeetingMenuItem;
 
@@ -74,6 +75,18 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
                 view.showLeaveDialog();
                 break;
             case MenuConstants.menu_audio:
+                KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
+                if (sdkAbility.isAudioConnected()) {
+                    if (sdkAbility.isMyAudioMuted()) {
+                        if (sdkAbility.canUnmuteMyAudio()) {
+                            sdkAbility.muteMyAudio(false);
+                        }
+                    } else {
+                        sdkAbility.muteMyAudio(true);
+                    }
+                } else {
+                    sdkAbility.connectAudioWithVoIP();
+                }
                 break;
             case MenuConstants.menu_camera:
                 break;

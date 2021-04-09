@@ -68,6 +68,10 @@ public interface KhSdkAbility extends AtAbility {
 
     boolean isMeetingHost();
 
+    boolean isHostUser(String userId);
+
+    boolean isMyself(String userId);
+
     void rotateLocalVideo(int degree);
 
     void setMeetingUserChangedListener(OnMeetingUserChangedListener listener);
@@ -95,10 +99,10 @@ public interface KhSdkAbility extends AtAbility {
     void connectAudioWithVoIP();
 
     //静音某人或者取消静音某人
-    void muteAttendeeAudio(boolean var1, long var2);
+    void muteAttendeeAudio(boolean mute, long var2);
 
     //静音或者取消静音所有人
-    void muteAllAttendeeAudio(boolean var1);
+    void muteAllAttendeeAudio(boolean mute);
 
     //取消静音所有人
     void unmuteAllAttendeeAudio();
@@ -144,6 +148,8 @@ public interface KhSdkAbility extends AtAbility {
 
     interface OnUserAudioStatusChangedListener {
         void onUserAudioStatusChanged(String userId);
+        void onUserAudioTypeChanged(String userId);
+        void onMyAudioSourceTypeChanged(int type);
     }
 
     enum KhMeetingStatus {
