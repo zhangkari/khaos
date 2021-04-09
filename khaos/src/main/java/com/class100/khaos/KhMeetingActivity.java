@@ -113,6 +113,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             @Override
             public void onUserVideoStatusChanged(String userId) {
                 Log.d(TAG, "onUserVideoStatusChanged:" + "userId = " + userId);
+                updateVideoStatus();
             }
         });
 
@@ -140,6 +141,15 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         });
     }
 
+    private void updateVideoStatus() {
+        KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
+        if (sdkAbility.isMyVideoMuted()) {
+            menuView.updateVideo(R.drawable.kh_ic_video_off);
+        } else {
+            menuView.updateVideo(R.drawable.kh_ic_video_on);
+        }
+    }
+
     private void updateAudioStatus(){
         KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
         if (sdkAbility.isAudioConnected()) {
@@ -149,7 +159,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
                 menuView.updateAudio(R.drawable.kh_ic_audio_on);
             }
         } else {
-            menuView.updateAudio(R.drawable.icon_meeting_noaudio);
+            menuView.updateAudio(R.drawable.kh_ic_no_audio);
         }
     }
 

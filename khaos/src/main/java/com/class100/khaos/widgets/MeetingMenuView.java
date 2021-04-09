@@ -110,6 +110,19 @@ public class MeetingMenuView extends FrameLayout {
         }
     }
 
+    public void updateVideo(int videoIcon) {
+        if (menuItems!=null && menuItems.size()>0){
+            int size  = menuItems.size();
+            for (int i =0;i<size;i++){
+                if (menuItems.get(i).id == MenuConstants.menu_camera){
+                    menuItems.get(i).icon = videoIcon;
+                    smartAdapter.notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
+    }
+
     public interface OnMenuItemClickListener {
         void onItemClick(MeetingMenuItem item);
     }

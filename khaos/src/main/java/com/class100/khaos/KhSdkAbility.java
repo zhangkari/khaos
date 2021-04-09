@@ -122,6 +122,15 @@ public interface KhSdkAbility extends AtAbility {
 
     void removeMeetingListener(OnMeetingStatusChangedListener listener);
 
+    //自己的视频是否被禁止
+    boolean isMyVideoMuted();
+
+    //是否可以关闭视频
+    boolean canUnmuteMyVideo();
+
+    //打开或者关闭自己的视频
+    void muteMyVideo(boolean mute);
+
     interface OnSdkInitializeListener {
         void onInitialized(@NonNull KhAbsSdk sdk);
 

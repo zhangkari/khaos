@@ -89,6 +89,13 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
                 }
                 break;
             case MenuConstants.menu_camera:
+                if (KhSdkManager.getInstance().getSdk().isMyVideoMuted()) {
+                    if (KhSdkManager.getInstance().getSdk().canUnmuteMyVideo()) {
+                        KhSdkManager.getInstance().getSdk().muteMyVideo(false);
+                    }
+                } else {
+                    KhSdkManager.getInstance().getSdk().muteMyVideo(true);
+                }
                 break;
         }
     }
