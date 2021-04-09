@@ -11,7 +11,7 @@ import java.util.List;
 public class KhMeetingModel implements KhMeetingContract.IMeetingModel {
     private List<MeetingMenuItem> buildMenuItems() {
         List<MeetingMenuItem> menus = new ArrayList<>(16);
-        menus.add(new MeetingMenuItem(MenuConstants.menu_audio, AtRes.getString(R.string.kh_microphone), R.drawable.kh_ic_audio));
+        menus.add(new MeetingMenuItem(MenuConstants.menu_audio, AtRes.getString(R.string.kh_microphone), R.drawable.kh_ic_audio_off));
         menus.add(new MeetingMenuItem(MenuConstants.menu_camera, AtRes.getString(R.string.kh_camera), R.drawable.kh_ic_video));
         menus.add(new MeetingMenuItem(MenuConstants.menu_chat, AtRes.getString(R.string.kh_chat), R.drawable.kh_ic_chat));
         menus.add(new MeetingMenuItem(MenuConstants.menu_attender, AtRes.getString(R.string.kh_attender), R.drawable.kh_ic_attender));

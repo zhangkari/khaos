@@ -115,6 +115,42 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
                 Log.d(TAG, "onUserVideoStatusChanged:" + "userId = " + userId);
             }
         });
+
+        KhSdkManager.getInstance().getSdk().setUserAudioStatusChangedListener(new KhSdkAbility.OnUserAudioStatusChangedListener() {
+            @Override
+            public void onUserAudioStatusChanged(String userId) {
+                Log.d(TAG, "onUserAudioStatusChanged:" + "userId = " + userId);
+                if (KhSdkManager.getInstance().getSdk().isMyself(userId)){
+                    updateAudioStatus();
+                }
+            }
+
+            @Override
+            public void onUserAudioTypeChanged(String userId) {
+                Log.d(TAG, "onUserAudioTypeChanged:" + "userId = " + userId);
+                if (KhSdkManager.getInstance().getSdk().isMyself(userId)){
+                    updateAudioStatus();
+                }
+            }
+
+            @Override
+            public void onMyAudioSourceTypeChanged(int type) {
+                Log.d(TAG, "onMyAudioSourceTypeChanged:" + "type = " + type);
+            }
+        });
+    }
+
+    private void updateAudioStatus(){
+        KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
+        if (sdkAbility.isAudioConnected()) {
+            if (sdkAbility.isMyAudioMuted()) {
+                menuView.updateAudio(R.drawable.kh_ic_audio_off);
+            } else {
+                menuView.updateAudio(R.drawable.kh_ic_audio_on);
+            }
+        } else {
+            menuView.updateAudio(R.drawable.icon_meeting_noaudio);
+        }
     }
 
     @Override

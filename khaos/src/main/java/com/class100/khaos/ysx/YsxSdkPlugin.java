@@ -587,6 +587,16 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     @Override
+    public boolean isHostUser(String userId) {
+        return YSXSdk.getInstance().getInMeetingService().isHostUser(Long.parseLong(userId));
+    }
+
+    @Override
+    public boolean isMyself(String userId) {
+        return YSXSdk.getInstance().getInMeetingService().isMyself(Long.parseLong(userId));
+    }
+
+    @Override
     public void rotateLocalVideo(int degree) {
         YSXSdk.getInstance()
                 .getInMeetingService()
@@ -629,6 +639,75 @@ public class YsxSdkPlugin extends KhAbsSdk {
             return;
         }
         MeetingVideoCallback.getInstance().addListener(userId -> listener.onUserVideoStatusChanged(String.valueOf(userId)));
+    }
+
+    @Override
+    public void setUserAudioStatusChangedListener(final OnUserAudioStatusChangedListener listener) {
+        if (listener == null) {
+            return;
+        }
+        MeetingAudioCallback.getInstance().addListener(new MeetingAudioCallback.AudioEvent(){
+
+            @Override
+            public void onUserAudioStatusChanged(long userId) {
+                listener.onUserAudioStatusChanged(String.valueOf(userId));
+            }
+
+            @Override
+            public void onUserAudioTypeChanged(long userId) {
+                listener.onUserAudioTypeChanged(String.valueOf(userId));
+            }
+
+            @Override
+            public void onMyAudioSourceTypeChanged(int type) {
+                listener.onMyAudioSourceTypeChanged(type);
+            }
+        });
+    }
+
+    @Override
+    public boolean isMyAudioMuted() {
+        return YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().isMyAudioMuted();
+    }
+
+    @Override
+    public boolean canUnmuteMyAudio() {
+        return YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().canUnmuteMyAudio();
+    }
+
+    @Override
+    public void muteMyAudio(boolean mute) {
+        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().muteMyAudio(mute);
+    }
+
+    @Override
+    public boolean isAudioConnected() {
+        return YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().isAudioConnected();
+    }
+
+    @Override
+    public void disconnectAudio() {
+        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().disconnectAudio();
+    }
+
+    @Override
+    public void connectAudioWithVoIP() {
+        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().connectAudioWithVoIP();
+    }
+
+    @Override
+    public void muteAttendeeAudio(boolean mute, long userId) {
+        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().muteAttendeeAudio(mute,userId);
+    }
+
+    @Override
+    public void muteAllAttendeeAudio(boolean mute) {
+        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().muteAllAttendeeAudio(mute);
+    }
+
+    @Override
+    public void unmuteAllAttendeeAudio() {
+        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().unmuteAllAttendeeAudio();
     }
 
     @Override

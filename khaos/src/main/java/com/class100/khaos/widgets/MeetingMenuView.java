@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.class100.khaos.R;
+import com.class100.khaos.meeting.MenuConstants;
 import com.class100.khaos.meeting.vb.MeetingMenuBinder;
 import com.class100.khaos.meeting.vm.MeetingMenuItem;
 
@@ -25,6 +26,7 @@ public class MeetingMenuView extends FrameLayout {
     private SmartAdapter smartAdapter;
     private RecyclerView recyclerView;
     private OnMenuItemClickListener listener;
+    private List<MeetingMenuItem> menuItems;
 
     public MeetingMenuView(@NonNull Context context) {
         this(context, null);
@@ -44,6 +46,7 @@ public class MeetingMenuView extends FrameLayout {
     }
 
     public MeetingMenuView setMenuItem(List<MeetingMenuItem> list) {
+        menuItems = list;
         smartAdapter.setData(list);
         return this;
     }
@@ -92,6 +95,19 @@ public class MeetingMenuView extends FrameLayout {
 
     private void animateMenuPanel(boolean show) {
         recyclerView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    public void updateAudio(int audioIcon) {
+        if (menuItems!=null && menuItems.size()>0){
+            int size  = menuItems.size();
+            for (int i =0;i<size;i++){
+                if (menuItems.get(i).id == MenuConstants.menu_audio){
+                    menuItems.get(i).icon = audioIcon;
+                    smartAdapter.notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
     }
 
     public interface OnMenuItemClickListener {

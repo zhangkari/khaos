@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
+import com.chinamobile.ysx.YSXMobileRTCSDKError;
 import com.class100.atropos.AtAbility;
 import com.class100.khaos.meeting.KhMeetingContract;
 import com.class100.khaos.req.KhReqCreateScheduled;
@@ -67,11 +68,45 @@ public interface KhSdkAbility extends AtAbility {
 
     boolean isMeetingHost();
 
+    boolean isHostUser(String userId);
+
+    boolean isMyself(String userId);
+
     void rotateLocalVideo(int degree);
 
     void setMeetingUserChangedListener(OnMeetingUserChangedListener listener);
 
     void setUserVideoStatusChangedListener(OnUserVideoStatusChangedListener listener);
+
+    void setUserAudioStatusChangedListener(OnUserAudioStatusChangedListener listener);
+
+    //自己是否静音
+    boolean isMyAudioMuted();
+
+    //自己能否取消静音
+    boolean canUnmuteMyAudio();
+
+    //静音或取消静音
+    void muteMyAudio(boolean mute);
+
+    //音频是否连接
+    boolean isAudioConnected();
+
+    //断开音频连接
+    void disconnectAudio();
+
+    //连接音频
+    void connectAudioWithVoIP();
+
+    //静音某人或者取消静音某人
+    void muteAttendeeAudio(boolean mute, long var2);
+
+    //静音或者取消静音所有人
+    void muteAllAttendeeAudio(boolean mute);
+
+    //取消静音所有人
+    void unmuteAllAttendeeAudio();
+
 
     void logout();
 
@@ -109,6 +144,12 @@ public interface KhSdkAbility extends AtAbility {
 
     interface OnUserVideoStatusChangedListener {
         void onUserVideoStatusChanged(String userId);
+    }
+
+    interface OnUserAudioStatusChangedListener {
+        void onUserAudioStatusChanged(String userId);
+        void onUserAudioTypeChanged(String userId);
+        void onMyAudioSourceTypeChanged(int type);
     }
 
     enum KhMeetingStatus {
