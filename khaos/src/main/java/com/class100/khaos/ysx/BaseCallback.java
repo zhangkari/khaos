@@ -19,4 +19,8 @@ public class BaseCallback<T extends BaseEvent> {
     public void removeListener(T event) {
         callbacks.remove(event);
     }
+
+    public void clear() {
+        callbacks.clear();
+    }
 }

@@ -145,10 +145,18 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
     @Override
     public void onDestroy() {
         AtLog.d(TAG, "onDestroy", "");
-        KhSdkManager.getInstance().getSdk().leaveMeeting();
-        KhSdkManager.getInstance().getSdk().removeMeetingListener(meetingStatusListener);
+        resetKhSdk();
         presenter.detach();
         super.onDestroy();
+    }
+
+    private void resetKhSdk() {
+        KhSdkAbility sdk = KhSdkManager.getInstance().getSdk();
+        sdk.leaveMeeting();
+        sdk.removeMeetingListener(meetingStatusListener);
+        sdk.setMeetingUserChangedListener(null);
+        sdk.setUserVideoStatusChangedListener(null);
+        sdk.setUserAudioStatusChangedListener(null);
     }
 
     private void checkVideoRotation(Context context) {

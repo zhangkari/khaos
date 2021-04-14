@@ -620,6 +620,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public void setMeetingUserChangedListener(final OnMeetingUserChangedListener listener) {
         if (listener == null) {
+            MeetingUserCallback.getInstance().clear();
             return;
         }
         MeetingUserCallback.getInstance().addListener(new MeetingUserCallback.UserEvent() {
@@ -649,6 +650,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public void setUserVideoStatusChangedListener(final OnUserVideoStatusChangedListener listener) {
         if (listener == null) {
+            MeetingVideoCallback.getInstance().clear();
             return;
         }
         MeetingVideoCallback.getInstance().addListener(userId -> listener.onUserVideoStatusChanged(String.valueOf(userId)));
@@ -657,6 +659,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public void setUserAudioStatusChangedListener(final OnUserAudioStatusChangedListener listener) {
         if (listener == null) {
+            MeetingAudioCallback.getInstance().clear();
             return;
         }
         MeetingAudioCallback.getInstance().addListener(new MeetingAudioCallback.AudioEvent() {
