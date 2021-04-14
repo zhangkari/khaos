@@ -51,7 +51,6 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         initView();
         initListener();
         presenter.loadMeetingMenu();
-        presenter.requestAttenders();
     }
 
     private void initView() {
@@ -90,6 +89,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
                 Log.d(TAG, "onMeetingStatusChanged:" + status);
                 if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_INMEETING) {
                     presenter.loadMeetingTitle();
+                    presenter.requestAttenders();
                 }
             }
         };
@@ -121,7 +121,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             @Override
             public void onUserAudioStatusChanged(String userId) {
                 Log.d(TAG, "onUserAudioStatusChanged:" + "userId = " + userId);
-                if (KhSdkManager.getInstance().getSdk().isMyself(userId)){
+                if (KhSdkManager.getInstance().getSdk().isMyself(userId)) {
                     updateAudioStatus();
                 }
             }
@@ -129,7 +129,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             @Override
             public void onUserAudioTypeChanged(String userId) {
                 Log.d(TAG, "onUserAudioTypeChanged:" + "userId = " + userId);
-                if (KhSdkManager.getInstance().getSdk().isMyself(userId)){
+                if (KhSdkManager.getInstance().getSdk().isMyself(userId)) {
                     updateAudioStatus();
                 }
             }
@@ -150,7 +150,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         }
     }
 
-    private void updateAudioStatus(){
+    private void updateAudioStatus() {
         KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
         if (sdkAbility.isAudioConnected()) {
             if (sdkAbility.isMyAudioMuted()) {
