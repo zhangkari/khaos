@@ -529,7 +529,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 config.status,
                 config.pageNo,
                 config.pageSize,
-                config.token,
+                YsxSdkHelper.getToken(),
                 new ResponseListenerCommon<YSXMeetingList>() {
                     @Override
                     public void onFailure(Result result) {
