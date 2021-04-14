@@ -57,7 +57,6 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         titleView = findViewById(R.id.meetingTitle);
         RecyclerView recyclerView = findViewById(R.id.rv_users);
         progressView = findViewById(R.id.layout_progress);
-
         menuView = findViewById(R.id.meeting_menu);
 
         smartAdapter = new SmartAdapter();
@@ -114,12 +113,9 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             }
         });
 
-        KhSdkManager.getInstance().getSdk().setUserVideoStatusChangedListener(new KhSdkAbility.OnUserVideoStatusChangedListener() {
-            @Override
-            public void onUserVideoStatusChanged(String userId) {
-                Log.d(TAG, "onUserVideoStatusChanged:" + "userId = " + userId);
-                updateVideoStatus();
-            }
+        KhSdkManager.getInstance().getSdk().setUserVideoStatusChangedListener(userId -> {
+            Log.d(TAG, "onUserVideoStatusChanged:" + "userId = " + userId);
+            presenter.refreshMenuVideoStatus();
         });
 
         KhSdkManager.getInstance().getSdk().setUserAudioStatusChangedListener(new KhSdkAbility.OnUserAudioStatusChangedListener() {
@@ -127,7 +123,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             public void onUserAudioStatusChanged(String userId) {
                 Log.d(TAG, "onUserAudioStatusChanged:" + "userId = " + userId);
                 if (KhSdkManager.getInstance().getSdk().isMyself(userId)) {
-                    updateAudioStatus();
+                    presenter.refreshMenuAudioStatus();
                 }
             }
 
@@ -135,7 +131,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             public void onUserAudioTypeChanged(String userId) {
                 Log.d(TAG, "onUserAudioTypeChanged:" + "userId = " + userId);
                 if (KhSdkManager.getInstance().getSdk().isMyself(userId)) {
-                    updateAudioStatus();
+                    presenter.refreshMenuAudioStatus();
                 }
             }
 
@@ -144,28 +140,6 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
                 Log.d(TAG, "onMyAudioSourceTypeChanged:" + "type = " + type);
             }
         });
-    }
-
-    private void updateVideoStatus() {
-        KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
-        if (sdkAbility.isMyVideoMuted()) {
-            menuView.updateVideo(R.drawable.kh_ic_video_off);
-        } else {
-            menuView.updateVideo(R.drawable.kh_ic_video_on);
-        }
-    }
-
-    private void updateAudioStatus() {
-        KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
-        if (sdkAbility.isAudioConnected()) {
-            if (sdkAbility.isMyAudioMuted()) {
-                menuView.updateAudio(R.drawable.kh_ic_audio_off);
-            } else {
-                menuView.updateAudio(R.drawable.kh_ic_audio_on);
-            }
-        } else {
-            menuView.updateAudio(R.drawable.kh_ic_no_audio);
-        }
     }
 
     @Override
@@ -201,12 +175,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
     @Override
     public void showMenu(List<MeetingMenuItem> menus) {
         menuView.setMenuItem(menus);
-        menuView.setOnMenuItemClickListener(new MeetingMenuView.OnMenuItemClickListener() {
-            @Override
-            public void onItemClick(MeetingMenuItem item) {
-                presenter.performMenuClick(item.id);
-            }
-        });
+        menuView.setOnMenuItemClickListener(item -> presenter.performMenuClick(item.id));
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.class100.khaos.meeting;
 import com.class100.atropos.generic.AtCollections;
 import com.class100.khaos.KhSdkAbility;
 import com.class100.khaos.KhSdkManager;
+import com.class100.khaos.R;
 import com.class100.khaos.meeting.vm.MeetingMenuItem;
 
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.List;
 public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
     private KhMeetingContract.IMeetingView view;
     private final KhMeetingContract.IMeetingModel model;
+
+    private List<MeetingMenuItem> cachedMenus;
 
     public KhMeetingPresenter(KhMeetingContract.IMeetingView view, KhMeetingContract.IMeetingModel model) {
         this.view = view;
@@ -22,6 +25,7 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
             @Override
             public void onSuccess(List<MeetingMenuItem> meetingMenuItems) {
                 if (view != null) {
+                    cachedMenus = meetingMenuItems;
                     view.showMenu(meetingMenuItems);
                 }
             }
@@ -72,7 +76,9 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
             case MenuConstants.menu_exit:
                 view.showLeaveDialog();
                 break;
+
             case MenuConstants.menu_audio:
+                refreshMenuAudioStatus();
                 KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
                 if (sdkAbility.isAudioConnected()) {
                     if (sdkAbility.isMyAudioMuted()) {
@@ -86,7 +92,9 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
                     sdkAbility.connectAudioWithVoIP();
                 }
                 break;
+
             case MenuConstants.menu_camera:
+                refreshMenuVideoStatus();
                 if (KhSdkManager.getInstance().getSdk().isMyVideoMuted()) {
                     if (KhSdkManager.getInstance().getSdk().canUnmuteMyVideo()) {
                         KhSdkManager.getInstance().getSdk().muteMyVideo(false);
@@ -94,6 +102,27 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
                 } else {
                     KhSdkManager.getInstance().getSdk().muteMyVideo(true);
                 }
+                break;
+
+            case MenuConstants.menu_attender:
+                //
+                // todo
+                //
+                break;
+
+            case MenuConstants.menu_chat:
+                // todo
+                // no-pmd
+                //
+                break;
+
+            case MenuConstants.menu_placement:
+                // no-pmd
+                // todo
+                //
+                break;
+
+            default:
                 break;
         }
     }
@@ -135,6 +164,57 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
     @Override
     public void notifyUserLeave(List<String> users) {
         requestAttenders();
+    }
+
+    private MeetingMenuItem findMenuItemById(int id) {
+        MeetingMenuItem item = null;
+        for (MeetingMenuItem i : cachedMenus) {
+            if (i.id == id) {
+                item = i;
+                break;
+            }
+        }
+        return item;
+    }
+
+    @Override
+    public void refreshMenuAudioStatus() {
+        MeetingMenuItem item = findMenuItemById(MenuConstants.menu_audio);
+        if (item == null) {
+            return;
+        }
+        KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
+        if (sdkAbility.isAudioConnected()) {
+            if (sdkAbility.isMyAudioMuted()) {
+                item.icon = R.drawable.kh_ic_audio_off;
+            } else {
+                item.icon = R.drawable.kh_ic_audio_on;
+            }
+        } else {
+            item.icon = R.drawable.kh_ic_no_audio;
+        }
+
+        if (view != null) {
+            view.showMenu(cachedMenus);
+        }
+    }
+
+    @Override
+    public void refreshMenuVideoStatus() {
+        MeetingMenuItem item = findMenuItemById(MenuConstants.menu_camera);
+        if (item == null) {
+            return;
+        }
+
+        KhSdkAbility sdkAbility = KhSdkManager.getInstance().getSdk();
+        if (sdkAbility.isMyVideoMuted()) {
+            item.icon = R.drawable.kh_ic_video_off;
+        } else {
+            item.icon = R.drawable.kh_ic_video_on;
+        }
+        if (view != null) {
+            view.showMenu(cachedMenus);
+        }
     }
 
     @Override
