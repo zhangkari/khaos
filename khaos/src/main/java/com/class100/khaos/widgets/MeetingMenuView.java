@@ -94,7 +94,7 @@ public class MeetingMenuView extends FrameLayout {
     }
 
     private void animateMenuPanel(boolean show) {
-        recyclerView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        recyclerView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     public void updateAudio(int audioIcon) {

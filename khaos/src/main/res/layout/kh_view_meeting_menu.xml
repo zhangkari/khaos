@@ -5,7 +5,8 @@
     android:descendantFocusability="afterDescendants"
     android:focusable="true"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="12dp">
 
     <CheckBox
         android:id="@+id/btn_expand"
@@ -15,7 +16,7 @@
         android:drawableTop="@drawable/kh_bg_meeting_menu_btn"
         android:focusable="true"
         android:includeFontPadding="false"
-        android:padding="6dp"
+        android:padding="12dp"
         android:text="@string/kh_expand"
         android:textColor="#f1f1f1"
         android:textSize="8sp" />
@@ -25,7 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:descendantFocusability="afterDescendants"
-        android:focusable="true"
-        android:padding="6dp" />
+        android:focusable="true" />
 
 </LinearLayout>
