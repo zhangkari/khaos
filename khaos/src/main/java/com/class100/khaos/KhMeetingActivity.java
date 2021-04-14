@@ -82,15 +82,20 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         checkVideoRotation(this);
     }
 
+    private void showIllegalMeetingStatus(KhSdkAbility.KhMeetingStatus status, int errorCode) {
+        AtLog.d(TAG, "onMeetingStatusChanged", "invalid status:" + status + " , errorCode:" + errorCode);
+        Toast.makeText(this, "启动会议出错:" + status, Toast.LENGTH_SHORT).show();
+    }
+
     private void initListener() {
-        meetingStatusListener = new KhSdkAbility.OnMeetingStatusChangedListener() {
-            @Override
-            public void onMeetingStatusChanged(KhSdkAbility.KhMeetingStatus status, int errorCode) {
-                Log.d(TAG, "onMeetingStatusChanged:" + status);
-                if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_INMEETING) {
-                    presenter.loadMeetingTitle();
-                    presenter.requestAttenders();
-                }
+        meetingStatusListener = (status, errorCode) -> {
+            Log.d(TAG, "onMeetingStatusChanged:" + status);
+            if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_INMEETING) {
+                presenter.loadMeetingTitle();
+                presenter.requestAttenders();
+            } else {
+                showIllegalMeetingStatus(status, errorCode);
+                finish();
             }
         };
         KhSdkManager.getInstance().getSdk().addMeetingListener(meetingStatusListener);

@@ -22,7 +22,6 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
             @Override
             public void onSuccess(List<MeetingMenuItem> meetingMenuItems) {
                 if (view != null) {
-                    view.hideLoading();
                     view.showMenu(meetingMenuItems);
                 }
             }
@@ -30,7 +29,6 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
             @Override
             public void onError(int code, String message) {
                 if (view != null) {
-                    view.hideLoading();
                     view.showError(code, message);
                 }
             }
