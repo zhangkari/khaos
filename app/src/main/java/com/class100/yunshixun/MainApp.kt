@@ -14,9 +14,9 @@ class MainApp : Application() {
         KhSdkManager.initSdk(
             KhSdkConstants.SDK_YSX,
             KhSdkConstants.InitParameters(
-                true,
-                "2za6NoKQ7OXTNIkLVHbE7G62EyRY7tuMmgX1",
-                "UEJbH1OnQZdVOALJqtjR2IYfpQxqWZKGzmhN"
+                false,
+                "FOwvZJf5DjpizygZahOH9hgyciQmgOsXR5eC",
+                "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr"
             )
         )
     }
