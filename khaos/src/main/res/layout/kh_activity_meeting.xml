@@ -32,13 +32,15 @@
 
     <LinearLayout
         android:id="@+id/layout_progress"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="@drawable/kh_bg_meeting_menu"
         android:focusable="false"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:padding="16dp"
+        android:visibility="visible">
 
         <ProgressBar
             android:layout_width="wrap_content"
@@ -47,6 +49,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/kh_entering_meeting" />
+            android:text="@string/kh_entering_meeting"
+            android:textColor="#fff" />
     </LinearLayout>
 </FrameLayout>

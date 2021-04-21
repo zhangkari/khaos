@@ -69,6 +69,10 @@ public interface KhMeetingContract {
 
         void notifyUserLeave(List<String> users);
 
+        void refreshMenuAudioStatus();
+
+        void refreshMenuVideoStatus();
+
         void detach();
     }
 

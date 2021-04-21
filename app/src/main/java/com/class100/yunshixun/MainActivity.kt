@@ -190,7 +190,6 @@ class MainActivity : AppCompatActivity() {
             config.status = 3;
             config.startTime = System.currentTimeMillis() - 24 * 60 * 60 * 1000
             config.endTime = System.currentTimeMillis() + 24 * 60 * 60 * 1000
-            config.token = YsxSdkHelper.getToken()
             config.pageNo = 1
             config.pageSize = 20
             KhSdkManager.getInstance().sdk.getMeetings(

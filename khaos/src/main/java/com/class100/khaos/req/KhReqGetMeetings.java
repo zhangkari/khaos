@@ -6,5 +6,4 @@ public class KhReqGetMeetings extends KhReqMeeting {
     public int status;
     public int pageNo;
     public int pageSize;
-    public String token;
 }

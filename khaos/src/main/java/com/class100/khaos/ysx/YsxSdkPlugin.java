@@ -385,9 +385,8 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public String getCurrentMeetingNo() {
         String No = String.valueOf(YSXSdk.getInstance().getMeetingService().getCurrentMeetingNumber());
-        String No2 = String.valueOf(YSXSdk.getInstance().getInMeetingService().getCurrentMeetingNumber());
-        AtLog.d(TAG, "getCurrentMeetingNo()", "No = " + No + ", No2 = " + No2);
-        return No2;
+        AtLog.d(TAG, "getCurrentMeetingNo()", "No = " + No);
+        return No;
     }
 
     @Override
@@ -529,7 +528,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 config.status,
                 config.pageNo,
                 config.pageSize,
-                config.token,
+                YsxSdkHelper.getToken(),
                 new ResponseListenerCommon<YSXMeetingList>() {
                     @Override
                     public void onFailure(Result result) {
@@ -567,16 +566,30 @@ public class YsxSdkPlugin extends KhAbsSdk {
         return user;
     }
 
+    private KhMeetingContract.MeetingUser buildLocalUser() {
+        KhMeetingContract.MeetingUser user = new KhMeetingContract.MeetingUser();
+        YSXUser sdk = YSXSdk.getInstance().getYSXuser();
+        user.id = sdk.getUserId();
+        user.name = sdk.getUserName();
+        user.isHost = true;
+        return user;
+    }
+
     @Override
     public List<KhMeetingContract.MeetingUser> getMeetingUsers() {
         YSXInMeetingService service = YSXSdk.getInstance().getInMeetingService();
         List<Long> users = service.getInMeetingUserList();
+        List<KhMeetingContract.MeetingUser> data;
         if (AtCollections.isEmpty(users)) {
-            return new ArrayList<>(0);
-        }
-        List<KhMeetingContract.MeetingUser> data = new ArrayList<>(users.size());
-        for (Long id : users) {
-            data.add(buildMeetingUserById(String.valueOf(id)));
+            AtLog.d(TAG, "getMeetingUsers", "inMeeting list size = 0");
+            data = new ArrayList<>(1);
+            data.add(buildLocalUser());
+        } else {
+            AtLog.d(TAG, "getMeetingUsers", "inMeeting list size = " + users.size());
+            data = new ArrayList<>(users.size());
+            for (Long id : users) {
+                data.add(buildMeetingUserById(String.valueOf(id)));
+            }
         }
         return data;
     }
@@ -607,6 +620,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public void setMeetingUserChangedListener(final OnMeetingUserChangedListener listener) {
         if (listener == null) {
+            MeetingUserCallback.getInstance().clear();
             return;
         }
         MeetingUserCallback.getInstance().addListener(new MeetingUserCallback.UserEvent() {
@@ -636,6 +650,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public void setUserVideoStatusChangedListener(final OnUserVideoStatusChangedListener listener) {
         if (listener == null) {
+            MeetingVideoCallback.getInstance().clear();
             return;
         }
         MeetingVideoCallback.getInstance().addListener(userId -> listener.onUserVideoStatusChanged(String.valueOf(userId)));
@@ -644,9 +659,10 @@ public class YsxSdkPlugin extends KhAbsSdk {
     @Override
     public void setUserAudioStatusChangedListener(final OnUserAudioStatusChangedListener listener) {
         if (listener == null) {
+            MeetingAudioCallback.getInstance().clear();
             return;
         }
-        MeetingAudioCallback.getInstance().addListener(new MeetingAudioCallback.AudioEvent(){
+        MeetingAudioCallback.getInstance().addListener(new MeetingAudioCallback.AudioEvent() {
 
             @Override
             public void onUserAudioStatusChanged(long userId) {
@@ -697,7 +713,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     @Override
     public void muteAttendeeAudio(boolean mute, long userId) {
-        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().muteAttendeeAudio(mute,userId);
+        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().muteAttendeeAudio(mute, userId);
     }
 
     @Override
