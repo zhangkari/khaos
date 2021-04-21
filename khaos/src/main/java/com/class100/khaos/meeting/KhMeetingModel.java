@@ -13,9 +13,9 @@ public class KhMeetingModel implements KhMeetingContract.IMeetingModel {
         List<MeetingMenuItem> menus = new ArrayList<>(16);
         menus.add(new MeetingMenuItem(MenuConstants.menu_audio, AtRes.getString(R.string.kh_microphone), R.drawable.kh_ic_audio_off));
         menus.add(new MeetingMenuItem(MenuConstants.menu_camera, AtRes.getString(R.string.kh_camera), R.drawable.kh_ic_video_off));
-        menus.add(new MeetingMenuItem(MenuConstants.menu_chat, AtRes.getString(R.string.kh_chat), R.drawable.kh_ic_chat));
-        menus.add(new MeetingMenuItem(MenuConstants.menu_attender, AtRes.getString(R.string.kh_attender), R.drawable.kh_ic_attender));
-        menus.add(new MeetingMenuItem(MenuConstants.menu_placement, AtRes.getString(R.string.kh_placement), R.drawable.kh_ic_placement));
+//        menus.add(new MeetingMenuItem(MenuConstants.menu_chat, AtRes.getString(R.string.kh_chat), R.drawable.kh_ic_chat));
+//        menus.add(new MeetingMenuItem(MenuConstants.menu_attender, AtRes.getString(R.string.kh_attender), R.drawable.kh_ic_attender));
+//        menus.add(new MeetingMenuItem(MenuConstants.menu_placement, AtRes.getString(R.string.kh_placement), R.drawable.kh_ic_placement));
         menus.add(new MeetingMenuItem(MenuConstants.menu_exit, AtRes.getString(R.string.kh_leave_meeting), R.drawable.kh_ic_exit));
         return menus;
     }
