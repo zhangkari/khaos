@@ -82,7 +82,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 env._app,
                 initParameters.appKey,
                 initParameters.appSecret,
-                initParameters.isDebugEnv,
+                initParameters.enableLog,
                 initParameters.isDebugEnv ? Enviroment.ENV_DEBUG : Enviroment.ENV_RELEASE,
                 (errorCode, internalErrorCode) -> {
                     AtLog.d(TAG, "Init ysx sdk result", "errorCode=" + errorCode + ", internalErrorCode=" + internalErrorCode);
