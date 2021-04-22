@@ -16,7 +16,7 @@ class MainApp : Application() {
             KhSdkConstants.InitParameters(
                 false,
                 "FOwvZJf5DjpizygZahOH9hgyciQmgOsXR5eC",
-                "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr"
+                "IQGrn2cvKiEdfPd44lOAof0fVUovoIZW0FMr",true
             )
         )
     }
