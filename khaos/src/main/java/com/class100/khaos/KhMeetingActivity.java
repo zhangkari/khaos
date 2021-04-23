@@ -50,7 +50,6 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
         presenter = new KhMeetingPresenter(this, new KhMeetingModel());
         initView();
         initListener();
-        presenter.loadMeetingMenu();
     }
 
     private void initView() {
@@ -92,6 +91,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             if (status == KhSdkAbility.KhMeetingStatus.MEETING_STATUS_INMEETING) {
                 presenter.loadMeetingTitle();
                 presenter.requestAttenders();
+                presenter.loadMeetingMenu();
             } else {
                 showIllegalMeetingStatus(status, errorCode);
                 finish();
@@ -182,6 +182,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
 
     @Override
     public void showMenu(List<MeetingMenuItem> menus) {
+        menuView.setVisibility(View.VISIBLE);
         menuView.setMenuItem(menus);
         menuView.setOnMenuItemClickListener(item -> presenter.performMenuClick(item.id));
     }
@@ -195,6 +196,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
 
     @Override
     public void showMeetingTitle(String host, String meetingNo, String duration) {
+        titleView.setVisibility(View.VISIBLE);
         titleView.setMeetingHost(host);
         titleView.setMeetingNo(meetingNo);
         titleView.setMeetingElapsed(duration);
@@ -215,6 +217,11 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
                 finish();
             }
         }).show(getSupportFragmentManager(), TAG);
+    }
+
+    @Override
+    public void showAttenderDialog() {
+        new MeetingAttenderDialog().show(getSupportFragmentManager(), "showAttenderDialog");
     }
 
     @Override

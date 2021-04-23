@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start|top"
         android:layout_margin="8dp"
-        android:focusable="false" />
+        android:focusable="false"
+        android:visibility="gone" />
 
     <com.class100.khaos.widgets.MeetingMenuView
         android:id="@+id/meeting_menu"
@@ -28,7 +29,8 @@
         android:layout_margin="20dp"
         android:background="@drawable/kh_bg_meeting_menu"
         android:descendantFocusability="afterDescendants"
-        android:focusable="true" />
+        android:focusable="true"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/layout_progress"

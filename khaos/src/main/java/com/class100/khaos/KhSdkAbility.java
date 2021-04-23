@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
-import com.chinamobile.ysx.YSXMobileRTCSDKError;
 import com.class100.atropos.AtAbility;
 import com.class100.khaos.meeting.KhMeetingContract;
 import com.class100.khaos.req.KhReqCreateScheduled;
@@ -99,7 +98,7 @@ public interface KhSdkAbility extends AtAbility {
     void connectAudioWithVoIP();
 
     //静音某人或者取消静音某人
-    void muteAttendeeAudio(boolean mute, long var2);
+    void muteAttendeeAudio(boolean mute, String userId);
 
     //静音或者取消静音所有人
     void muteAllAttendeeAudio(boolean mute);
@@ -107,6 +106,9 @@ public interface KhSdkAbility extends AtAbility {
     //取消静音所有人
     void unmuteAllAttendeeAudio();
 
+    void askAttendeeVideo(String userId);
+
+    void stopAttendeeVideo(String userId);
 
     void logout();
 
@@ -157,7 +159,9 @@ public interface KhSdkAbility extends AtAbility {
 
     interface OnUserAudioStatusChangedListener {
         void onUserAudioStatusChanged(String userId);
+
         void onUserAudioTypeChanged(String userId);
+
         void onMyAudioSourceTypeChanged(int type);
     }
 

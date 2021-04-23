@@ -46,19 +46,22 @@
         android:layout_height="match_parent"
         android:layout_margin="2dp"
         android:background="#f1f1f1"
-        android:padding="2dp" />
+        android:padding="2dp"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/kh_meeting_elapsed"
         android:textColor="#f1f1f1"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_elapsed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#f1f1f1"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:visibility="gone" />
 </LinearLayout>

@@ -7,6 +7,7 @@ import android.os.Looper;
 import com.chinamobile.ysx.YSXError;
 import com.chinamobile.ysx.YSXImConfig;
 import com.chinamobile.ysx.YSXInMeetingService;
+import com.chinamobile.ysx.YSXInMeetingVideoController;
 import com.chinamobile.ysx.YSXInstantMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingOptions;
 import com.chinamobile.ysx.YSXJoinMeetingParams;
@@ -712,8 +713,8 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     @Override
-    public void muteAttendeeAudio(boolean mute, long userId) {
-        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().muteAttendeeAudio(mute, userId);
+    public void muteAttendeeAudio(boolean mute, String userId) {
+        YSXSdk.getInstance().getInMeetingService().getInMeetingAudioController().muteAttendeeAudio(mute, Long.parseLong(userId));
     }
 
     @Override
@@ -727,11 +728,25 @@ public class YsxSdkPlugin extends KhAbsSdk {
     }
 
     @Override
+    public void askAttendeeVideo(String userId) {
+        YSXInMeetingVideoController controller = YSXSdk.getInstance().getInMeetingService().getInMeetingVideoController();
+        controller.askAttendeeStartVideo(Long.parseLong(userId));
+    }
+
+    @Override
+    public void stopAttendeeVideo(String userId) {
+        YSXInMeetingVideoController controller = YSXSdk.getInstance().getInMeetingService().getInMeetingVideoController();
+        controller.stopAttendeeVideo(Long.parseLong(userId));
+    }
+
+    @Override
     public void logout() {
         YSXSdk.getInstance().sdkLogout();
         YSXUser user = YSXSdk.getInstance().getYSXuser();
-        user.setUserName("");
-        user.setUserId("");
+        if (user != null) {
+            user.setUserName("");
+            user.setUserId("");
+        }
     }
 
     @Override

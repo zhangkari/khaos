@@ -8,13 +8,14 @@ import com.class100.khaos.meeting.vm.MeetingMenuItem;
 
 import java.util.List;
 
-public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
+public class KhMeetingPresenter extends KhAttenderPresenter implements KhMeetingContract.IMeetingPresenter {
     private KhMeetingContract.IMeetingView view;
     private final KhMeetingContract.IMeetingModel model;
 
     private List<MeetingMenuItem> cachedMenus;
 
     public KhMeetingPresenter(KhMeetingContract.IMeetingView view, KhMeetingContract.IMeetingModel model) {
+        super(view, model);
         this.view = view;
         this.model = model;
     }
@@ -105,9 +106,9 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
                 break;
 
             case MenuConstants.menu_attender:
-                //
-                // todo
-                //
+                if (view != null) {
+                    view.showAttenderDialog();
+                }
                 break;
 
             case MenuConstants.menu_chat:
@@ -128,35 +129,6 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
     }
 
     @Override
-    public void executeControlMeeting(int cmd) {
-
-    }
-
-    @Override
-    public void requestAttenders() {
-        if (view != null) {
-            view.showLoading();
-        }
-        model.queryUsers(new KhMeetingContract.ResultCallback<List<KhMeetingContract.MeetingUser>>() {
-            @Override
-            public void onSuccess(List<KhMeetingContract.MeetingUser> meetingUsers) {
-                if (view != null) {
-                    view.hideLoading();
-                    view.showAttenders(meetingUsers);
-                }
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (view != null) {
-                    view.hideLoading();
-                    view.showError(code, message);
-                }
-            }
-        });
-    }
-
-    @Override
     public void notifyUserJoin(List<String> users) {
         requestAttenders();
     }
@@ -167,6 +139,10 @@ public class KhMeetingPresenter implements KhMeetingContract.IMeetingPresenter {
     }
 
     private MeetingMenuItem findMenuItemById(int id) {
+        if (AtCollections.isEmpty(cachedMenus)) {
+            return null;
+        }
+
         MeetingMenuItem item = null;
         for (MeetingMenuItem i : cachedMenus) {
             if (i.id == id) {

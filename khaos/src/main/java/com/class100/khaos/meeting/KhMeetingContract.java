@@ -12,10 +12,12 @@ public interface KhMeetingContract {
     int cmd_leave_meeting = 100;
     int cmd_finish_meeting = 200;
     int cmd_disable_audio = 300;
+    int cmd_enable_audio = 301;
     int cmd_disable_video = 400;
+    int cmd_enable_video = 401;
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({cmd_leave_meeting, cmd_finish_meeting, cmd_disable_audio, cmd_disable_video})
+    @IntDef({cmd_leave_meeting, cmd_finish_meeting, cmd_disable_audio, cmd_disable_video, cmd_enable_audio, cmd_enable_video})
     @interface MeetingCtrlCmd {
 
     }
@@ -38,32 +40,40 @@ public interface KhMeetingContract {
         public boolean disableAudio;
     }
 
-    interface IMeetingView {
+    interface IAttenderView {
         void showLoading();
 
         void hideLoading();
 
         void showError(int code, String message);
 
-        void showMenu(List<MeetingMenuItem> menus);
-
         void showAttenders(List<MeetingUser> attenders);
+    }
+
+    interface IMeetingView extends IAttenderView {
+        void showMenu(List<MeetingMenuItem> menus);
 
         void showMeetingTitle(String host, String meetingNo, String duration);
 
         void showLeaveDialog();
+
+        void showAttenderDialog();
     }
 
-    interface IMeetingPresenter {
+    interface IAttenderPresenter {
+        void requestAttenders();
+
+        void executeControlMeeting(@MeetingCtrlCmd int cmd, String... argument);
+
+        void detach();
+    }
+
+    interface IMeetingPresenter extends IAttenderPresenter {
         void loadMeetingMenu();
 
         void loadMeetingTitle();
 
         void performMenuClick(@MenuConstants.MeetingMenuId int id);
-
-        void executeControlMeeting(@MeetingCtrlCmd int cmd);
-
-        void requestAttenders();
 
         void notifyUserJoin(List<String> users);
 
@@ -72,15 +82,15 @@ public interface KhMeetingContract {
         void refreshMenuAudioStatus();
 
         void refreshMenuVideoStatus();
-
-        void detach();
     }
 
-    interface IMeetingModel {
-        void loadMenuItems(ResultCallback<List<MeetingMenuItem>> callback);
-
+    interface IAttenderModel {
         void queryUsers(ResultCallback<List<MeetingUser>> callback);
 
-        void controlMeeting(@MeetingCtrlCmd int cmd);
+        void controlMeeting(@MeetingCtrlCmd int cmd, String... arguments);
+    }
+
+    interface IMeetingModel extends IAttenderModel {
+        void loadMenuItems(ResultCallback<List<MeetingMenuItem>> callback);
     }
 }
