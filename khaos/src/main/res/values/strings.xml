@@ -17,4 +17,10 @@
     <string name="kh_chat">聊天</string>
     <string name="kh_attender">参会人</string>
     <string name="kh_placement">布局</string>
+
+    <string name="kh_host_ask">主持人邀请您</string>
+    <string name="kh_host_ask_cancel_mute">开启语音</string>
+    <string name="kh_host_ask_start_video">开启视频</string>
+    <string name="kh_accept">好的</string>
+    <string name="kh_accept_later">稍后开启</string>
 </resources>

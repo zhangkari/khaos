@@ -122,7 +122,9 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
 
             @Override
             public void onHostAskStartVideo(String userId) {
-
+                if (!isFinishing()) {
+                    showHostAskDialog(1, userId);
+                }
             }
         });
 
@@ -150,9 +152,33 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
 
             @Override
             public void onHostAskUnMute(String userId) {
-
+                if (!isFinishing()) {
+                    showHostAskDialog(0, userId);
+                }
             }
         });
+    }
+
+    /**
+     * show a dialog according meeting host ask
+     *
+     * @param type 0 cancel mute audio, 1 start video
+     */
+    private void showHostAskDialog(int type, String userId) {
+        String currentUserId = KhSdkManager.getInstance().getSdk().getUserProfile().userId;
+        AtLog.d(TAG, "showHostAskDialog", " type = " + type + ", userId = " + userId);
+        AtLog.d(TAG, "showHostAskDialog", "myUserId = " + currentUserId);
+        new KhMeetingHostAskDialog(type, () -> {
+            switch (type) {
+                case 0:
+                    KhSdkManager.getInstance().getSdk().muteMyAudio(false);
+                    break;
+
+                case 1:
+                    KhSdkManager.getInstance().getSdk().muteMyVideo(false);
+                    break;
+            }
+        }).show(getSupportFragmentManager(), TAG);
     }
 
     @Override
