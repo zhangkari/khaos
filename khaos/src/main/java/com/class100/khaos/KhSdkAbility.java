@@ -155,6 +155,8 @@ public interface KhSdkAbility extends AtAbility {
 
     interface OnUserVideoStatusChangedListener {
         void onUserVideoStatusChanged(String userId);
+
+        void onHostAskStartVideo(String userId);
     }
 
     interface OnUserAudioStatusChangedListener {
@@ -163,6 +165,8 @@ public interface KhSdkAbility extends AtAbility {
         void onUserAudioTypeChanged(String userId);
 
         void onMyAudioSourceTypeChanged(String type);
+
+        void onHostAskUnMute(String userId);
     }
 
     enum KhMeetingStatus {

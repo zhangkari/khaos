@@ -654,7 +654,18 @@ public class YsxSdkPlugin extends KhAbsSdk {
             MeetingVideoCallback.getInstance().clear();
             return;
         }
-        MeetingVideoCallback.getInstance().addListener(userId -> listener.onUserVideoStatusChanged(String.valueOf(userId)));
+        MeetingVideoCallback.getInstance().addListener(new MeetingVideoCallback.VideoEvent() {
+            @Override
+            public void onUserVideoStatusChanged(long userId) {
+                listener.onUserVideoStatusChanged(String.valueOf(userId));
+            }
+
+            @Override
+            public void onHostAskStartVideo(long userId) {
+                listener.onHostAskStartVideo(String.valueOf(userId));
+            }
+        });
+
     }
 
     @Override
@@ -677,6 +688,11 @@ public class YsxSdkPlugin extends KhAbsSdk {
             @Override
             public void onMyAudioSourceTypeChanged(int type) {
                 listener.onMyAudioSourceTypeChanged(String.valueOf(type));
+            }
+
+            @Override
+            public void onHostAskUnMute(long userId) {
+                listener.onHostAskUnMute(String.valueOf(userId));
             }
         });
     }

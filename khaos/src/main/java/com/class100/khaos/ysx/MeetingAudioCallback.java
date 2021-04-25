@@ -5,12 +5,13 @@ import com.chinamobile.ysx.YSXSdk;
 public class MeetingAudioCallback extends BaseCallback<MeetingAudioCallback.AudioEvent> {
 
     public interface AudioEvent extends BaseEvent {
-
         void onUserAudioStatusChanged(long userId);
 
         void onUserAudioTypeChanged(long userId);
 
         void onMyAudioSourceTypeChanged(int type);
+
+        void onHostAskUnMute(long userId);
     }
 
     static MeetingAudioCallback instance;
@@ -57,6 +58,12 @@ public class MeetingAudioCallback extends BaseCallback<MeetingAudioCallback.Audi
             }
         }
 
+        @Override
+        public void onHostAskUnMute(long userId) {
+            for (AudioEvent event : callbacks) {
+                event.onHostAskUnMute(userId);
+            }
+        }
     };
 
     /*

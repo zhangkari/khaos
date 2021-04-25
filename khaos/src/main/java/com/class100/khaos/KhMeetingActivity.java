@@ -113,9 +113,17 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             }
         });
 
-        KhSdkManager.getInstance().getSdk().setUserVideoStatusChangedListener(userId -> {
-            Log.d(TAG, "onUserVideoStatusChanged:" + "userId = " + userId);
-            presenter.refreshMenuVideoStatus();
+        KhSdkManager.getInstance().getSdk().setUserVideoStatusChangedListener(new KhSdkAbility.OnUserVideoStatusChangedListener() {
+            @Override
+            public void onUserVideoStatusChanged(String userId) {
+                Log.d(TAG, "onUserVideoStatusChanged:" + "userId = " + userId);
+                presenter.refreshMenuVideoStatus();
+            }
+
+            @Override
+            public void onHostAskStartVideo(String userId) {
+
+            }
         });
 
         KhSdkManager.getInstance().getSdk().setUserAudioStatusChangedListener(new KhSdkAbility.OnUserAudioStatusChangedListener() {
@@ -138,6 +146,11 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             @Override
             public void onMyAudioSourceTypeChanged(String type) {
                 Log.d(TAG, "onMyAudioSourceTypeChanged:" + "type = " + type);
+            }
+
+            @Override
+            public void onHostAskUnMute(String userId) {
+
             }
         });
     }
