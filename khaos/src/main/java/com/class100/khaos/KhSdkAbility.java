@@ -162,7 +162,7 @@ public interface KhSdkAbility extends AtAbility {
 
         void onUserAudioTypeChanged(String userId);
 
-        void onMyAudioSourceTypeChanged(int type);
+        void onMyAudioSourceTypeChanged(String type);
     }
 
     enum KhMeetingStatus {

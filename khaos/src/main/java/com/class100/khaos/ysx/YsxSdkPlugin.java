@@ -664,7 +664,6 @@ public class YsxSdkPlugin extends KhAbsSdk {
             return;
         }
         MeetingAudioCallback.getInstance().addListener(new MeetingAudioCallback.AudioEvent() {
-
             @Override
             public void onUserAudioStatusChanged(long userId) {
                 listener.onUserAudioStatusChanged(String.valueOf(userId));
@@ -677,7 +676,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
             @Override
             public void onMyAudioSourceTypeChanged(int type) {
-                listener.onMyAudioSourceTypeChanged(type);
+                listener.onMyAudioSourceTypeChanged(String.valueOf(type));
             }
         });
     }

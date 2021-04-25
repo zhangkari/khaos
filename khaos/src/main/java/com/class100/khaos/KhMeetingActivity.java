@@ -136,7 +136,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
             }
 
             @Override
-            public void onMyAudioSourceTypeChanged(int type) {
+            public void onMyAudioSourceTypeChanged(String type) {
                 Log.d(TAG, "onMyAudioSourceTypeChanged:" + "type = " + type);
             }
         });
