@@ -23,8 +23,6 @@ public class MeetingUserBinder extends ViewBinder<KhMeetingContract.MeetingUser>
     public void onCreate(ViewGroup parent) {
         super.onCreate(parent);
         resizeView(parent);
-        view.setFocusable(true);
-        view.requestFocus();
     }
 
     @Override

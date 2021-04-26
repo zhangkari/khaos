@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.class100.khaos.widgets.MyFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="afterDescendants"
@@ -54,4 +54,4 @@
             android:text="@string/kh_entering_meeting"
             android:textColor="#fff" />
     </LinearLayout>
-</FrameLayout>
+</com.class100.khaos.widgets.MyFrameLayout>
