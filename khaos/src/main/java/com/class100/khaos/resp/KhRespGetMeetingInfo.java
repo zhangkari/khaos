@@ -16,13 +16,7 @@ public class KhRespGetMeetingInfo {
     public int duration;
     public int meetingType;
     public String password;
-    public List<Participant> participants;
+    public List<KhRespGetMeetings.Participant> participants;
 
     public int status;
-
-    public static class Participant {
-        public String id;
-        public String name;
-        public String mobileNo;
-    }
 }
