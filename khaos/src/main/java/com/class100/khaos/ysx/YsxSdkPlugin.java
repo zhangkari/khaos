@@ -416,7 +416,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     private void getMeetingInfoById(KhReqGetMeetingInfo config, final KhSdkListener<KhRespGetMeetingInfo> listener) {
         YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
-        service.getMeetingInfoByID(config.meetingId, config.token, new ResponseListenerCommon<KhRespGetMeetingInfo>() {
+        service.getMeetingInfoByID(config.meetingId, YsxSdkHelper.getToken(), new ResponseListenerCommon<KhRespGetMeetingInfo>() {
             @Override
             public void onFailure(Result result) {
                 if (listener != null) {
@@ -435,7 +435,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     private void getMeetingInfoByNo(KhReqGetMeetingInfo config, final KhSdkListener<KhRespGetMeetingInfo> listener) {
         YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
-        service.getMeetingInfoByNo(config.meetingNo, config.token, new ResponseListenerCommon<KhRespGetMeetingInfo>() {
+        service.getMeetingInfoByNo(config.meetingNo, YsxSdkHelper.getToken(), new ResponseListenerCommon<KhRespGetMeetingInfo>() {
             @Override
             public void onFailure(Result result) {
                 if (listener != null) {
