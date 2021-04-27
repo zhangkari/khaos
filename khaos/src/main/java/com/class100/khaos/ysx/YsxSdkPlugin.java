@@ -422,19 +422,24 @@ public class YsxSdkPlugin extends KhAbsSdk {
             @Override
             public void onFailure(Result result) {
                 if (listener != null) {
-                    listener.onError(result.getCode(), result.getMsg());
+                    mHandler.post(() -> listener.onError(result.getCode(), result.getMsg()));
                 }
             }
 
             @Override
             public void onResponse(YSXMeetingInfo result) {
-                KhRespGetMeetingInfo info = YsxSdkHelper.adapt(result);
                 if (listener != null) {
-                    if (info == null){
-                        listener.onError(result.getCode(), "error");
-                    }else {
-                        listener.onSuccess(info);
-                    }
+                    KhRespGetMeetingInfo info = YsxSdkHelper.adapt(result);
+                    mHandler.post(() -> {
+                                if (info == null) {
+                                    listener.onError(result.getCode(), "error");
+                                } else {
+                                    listener.onSuccess(info);
+                                }
+                            }
+
+                    );
+
                 }
             }
         });
@@ -446,19 +451,23 @@ public class YsxSdkPlugin extends KhAbsSdk {
             @Override
             public void onFailure(Result result) {
                 if (listener != null) {
-                    listener.onError(result.getCode(), result.getMsg());
+                    mHandler.post(() -> listener.onError(result.getCode(), result.getMsg()));
                 }
             }
 
             @Override
             public void onResponse(YSXMeetingInfoSimple result) {
-                KhRespGetMeetingInfo info = YsxSdkHelper.adapt(result);
                 if (listener != null) {
-                    if (info == null){
-                        listener.onError(result.getCode(), "error");
-                    }else {
-                        listener.onSuccess(info);
-                    }
+                    KhRespGetMeetingInfo info = YsxSdkHelper.adapt(result);
+                    mHandler.post(() -> {
+                                if (info == null) {
+                                    listener.onError(result.getCode(), "error");
+                                } else {
+                                    listener.onSuccess(info);
+                                }
+                            }
+
+                    );
                 }
             }
         });
