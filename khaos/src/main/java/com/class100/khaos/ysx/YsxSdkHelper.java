@@ -1,10 +1,13 @@
 package com.class100.khaos.ysx;
 
 import com.chinamobile.ysx.YSXSdk;
+import com.chinamobile.ysx.bean.YSXMeetingInfo;
+import com.chinamobile.ysx.bean.YSXMeetingInfoSimple;
 import com.chinamobile.ysx.bean.YSXMeetingList;
 import com.chinamobile.ysx.iminterface.InviteMeeting;
 import com.class100.atropos.generic.AtCollections;
 import com.class100.khaos.KhIMMessage;
+import com.class100.khaos.resp.KhRespGetMeetingInfo;
 import com.class100.khaos.resp.KhRespGetMeetings;
 
 import java.text.SimpleDateFormat;
@@ -104,5 +107,62 @@ public final class YsxSdkHelper {
         khIMMessage.setAnswerCode(inviteMeeting.getAnswerCode());
         khIMMessage.setMobile(inviteMeeting.getMobile());
         return khIMMessage;
+    }
+
+    public static KhRespGetMeetingInfo adapt(YSXMeetingInfo ysxMeetingInfo) {
+        if (ysxMeetingInfo.getCode() != 0 || ysxMeetingInfo.getData() ==null) {
+            return null;
+        }
+        KhRespGetMeetingInfo result = new KhRespGetMeetingInfo();
+        YSXMeetingInfo.Data data = ysxMeetingInfo.getData();
+        result.id = data.getId();
+        result.ownerId = data.getOwnerId();
+        result.agenda = data.getAgenda();
+        result.endTime = data.getEndTime();
+        result.hostName =  data.getHostName();
+        result.password = data.getPassword();
+        result.startTime = data.getStartTime();
+        result.topic = data.getTopic();
+        result.UTCStartTime = data.getUTCStartTime();
+        result.duration = data.getDuration();
+        result.meetingNo = data.getMeetingNo();
+        result.meetingType = data.getMeetingType();
+        result.openHostVideo = data.getOpenHostVideo();
+        result.status = data.getStatus();
+        List<KhRespGetMeetings.Participant> participants = new ArrayList<>();
+        List<YSXMeetingInfo.Participants> dataParticipants = data.getParticipants();
+        if (dataParticipants!=null && dataParticipants.size()>0){
+            for (YSXMeetingInfo.Participants info :dataParticipants){
+                KhRespGetMeetings.Participant bean = new KhRespGetMeetings.Participant();
+                bean.id = info.getId();
+                bean.mobileNo = info.getMobileNo();
+                bean.name = info.getName();
+                participants.add(bean);
+            }
+        }
+        result.participants = participants;
+        return result;
+    }
+
+    public static KhRespGetMeetingInfo adapt(YSXMeetingInfoSimple ysxMeetingInfo) {
+        if (ysxMeetingInfo.getCode() != 0 || ysxMeetingInfo.getData() ==null) {
+            return null;
+        }
+        KhRespGetMeetingInfo result = new KhRespGetMeetingInfo();
+        YSXMeetingInfoSimple.Data data = ysxMeetingInfo.getData();
+        result.id = data.getId();
+        result.ownerId = data.getOwnerId();
+        result.agenda = data.getAgenda();
+        result.hostName =  data.getHostName();
+        result.password = data.getPassword();
+        result.startTime = data.getStartTime();
+        result.topic = data.getTopic();
+        result.UTCStartTime = data.getUTCStartTime();
+        result.duration = data.getDuration();
+        result.meetingNo = data.getMeetingNo();
+        result.meetingType = data.getMeetingType();
+        result.openHostVideo = data.getOpenHostVideo();
+        result.status = data.getStatus();
+        return result;
     }
 }

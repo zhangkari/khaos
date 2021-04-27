@@ -22,6 +22,8 @@ import com.chinamobile.ysx.YSXStartMeetingParams4NormalUser;
 import com.chinamobile.ysx.auther.bean.YSXUser;
 import com.chinamobile.ysx.bean.Result;
 import com.chinamobile.ysx.bean.ScheduledMeetingInfo;
+import com.chinamobile.ysx.bean.YSXMeetingInfo;
+import com.chinamobile.ysx.bean.YSXMeetingInfoSimple;
 import com.chinamobile.ysx.bean.YSXMeetingList;
 import com.chinamobile.ysx.http.Enviroment;
 import com.chinamobile.ysx.iminterface.IMOflineLinePushConfig;
@@ -416,7 +418,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     private void getMeetingInfoById(KhReqGetMeetingInfo config, final KhSdkListener<KhRespGetMeetingInfo> listener) {
         YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
-        service.getMeetingInfoByID(config.meetingId, YsxSdkHelper.getToken(), new ResponseListenerCommon<KhRespGetMeetingInfo>() {
+        service.getMeetingInfoByID(config.meetingId, YsxSdkHelper.getToken(), new ResponseListenerCommon<YSXMeetingInfo>() {
             @Override
             public void onFailure(Result result) {
                 if (listener != null) {
@@ -425,9 +427,14 @@ public class YsxSdkPlugin extends KhAbsSdk {
             }
 
             @Override
-            public void onResponse(KhRespGetMeetingInfo result) {
+            public void onResponse(YSXMeetingInfo result) {
+                KhRespGetMeetingInfo info = YsxSdkHelper.adapt(result);
                 if (listener != null) {
-                    listener.onSuccess(result);
+                    if (info == null){
+                        listener.onError(result.getCode(), "error");
+                    }else {
+                        listener.onSuccess(info);
+                    }
                 }
             }
         });
@@ -435,7 +442,7 @@ public class YsxSdkPlugin extends KhAbsSdk {
 
     private void getMeetingInfoByNo(KhReqGetMeetingInfo config, final KhSdkListener<KhRespGetMeetingInfo> listener) {
         YSXMeetingService service = YSXSdk.getInstance().getMeetingService();
-        service.getMeetingInfoByNo(config.meetingNo, YsxSdkHelper.getToken(), new ResponseListenerCommon<KhRespGetMeetingInfo>() {
+        service.getMeetingInfoByNo(config.meetingNo, YsxSdkHelper.getToken(), new ResponseListenerCommon<YSXMeetingInfoSimple>() {
             @Override
             public void onFailure(Result result) {
                 if (listener != null) {
@@ -444,9 +451,14 @@ public class YsxSdkPlugin extends KhAbsSdk {
             }
 
             @Override
-            public void onResponse(KhRespGetMeetingInfo result) {
+            public void onResponse(YSXMeetingInfoSimple result) {
+                KhRespGetMeetingInfo info = YsxSdkHelper.adapt(result);
                 if (listener != null) {
-                    listener.onSuccess(result);
+                    if (info == null){
+                        listener.onError(result.getCode(), "error");
+                    }else {
+                        listener.onSuccess(info);
+                    }
                 }
             }
         });
