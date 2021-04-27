@@ -82,7 +82,7 @@ public class KhMeetingActivity extends AppCompatActivity implements KhMeetingCon
 
     private void showIllegalMeetingStatus(KhSdkAbility.KhMeetingStatus status, int errorCode) {
         AtLog.d(TAG, "onMeetingStatusChanged", "invalid status:" + status + " , errorCode:" + errorCode);
-        Toast.makeText(this, "启动会议出错:" + status, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "启动会议出错:" + status, Toast.LENGTH_SHORT).show();
     }
 
     private void initListener() {
