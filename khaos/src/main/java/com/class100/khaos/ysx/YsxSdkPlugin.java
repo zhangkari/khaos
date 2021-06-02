@@ -25,7 +25,6 @@ import com.chinamobile.ysx.bean.ScheduledMeetingInfo;
 import com.chinamobile.ysx.bean.YSXMeetingInfo;
 import com.chinamobile.ysx.bean.YSXMeetingInfoSimple;
 import com.chinamobile.ysx.bean.YSXMeetingList;
-import com.chinamobile.ysx.http.Enviroment;
 import com.chinamobile.ysx.iminterface.IMOflineLinePushConfig;
 import com.chinamobile.ysx.iminterface.ImConnectionListener;
 import com.chinamobile.ysx.responselistener.ResponseListenerCommon;
@@ -86,7 +85,6 @@ public class YsxSdkPlugin extends KhAbsSdk {
                 initParameters.appKey,
                 initParameters.appSecret,
                 initParameters.enableLog,
-                initParameters.isDebugEnv ? Enviroment.ENV_DEBUG : Enviroment.ENV_RELEASE,
                 (errorCode, internalErrorCode) -> {
                     AtLog.d(TAG, "Init ysx sdk result", "errorCode=" + errorCode + ", internalErrorCode=" + internalErrorCode);
                     if (errorCode != YSXError.SUCCESS) {
