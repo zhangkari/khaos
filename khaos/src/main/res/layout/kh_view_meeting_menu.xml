@@ -19,7 +19,7 @@
         android:padding="14dp"
         android:text="@string/kh_expand"
         android:textColor="#f1f1f1"
-        android:textSize="8sp" />
+        android:textSize="14sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_menus"
