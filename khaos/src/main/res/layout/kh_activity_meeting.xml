@@ -52,6 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/kh_entering_meeting"
+            android:textSize="14sp"
             android:textColor="#fff" />
     </LinearLayout>
 </com.class100.khaos.widgets.MyFrameLayout>
